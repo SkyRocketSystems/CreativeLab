@@ -1,0 +1,3 @@
+# Desactiva Jekyll también cuando GitHub Pages usa "Deploy from a branch".
+# Sin este archivo, Jekyll intenta leer el frontmatter `---` de los .astro
+# como YAML y el build falla con "Invalid YAML front matter".

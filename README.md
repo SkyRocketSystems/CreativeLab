@@ -29,6 +29,18 @@ Landing page única con configurador visual en tiempo real para tote bags, organ
 - **Precios y presets**: constantes `PRECIOS` y `PRESETS` en el mismo archivo.
 - **Paleta y tipografía**: variables en `src/styles/global.css` (Manrope, Caveat, Playfair Display).
 
+## 🚀 Despliegue en GitHub Pages
+
+1. Sube el repositorio a GitHub (rama `main`).
+2. En el repo: **Settings → Pages → Source: GitHub Actions**.
+3. Cada push a `main` ejecuta `.github/workflows/deploy.yml` (build oficial de Astro + deploy de Pages).
+4. El sitio queda publicado en `https://<tu-usuario>.github.io/creativeLab-proto/`.
+
+Notas:
+- La ruta base se define en `astro.config.mjs` (`base`). Si publicas en un dominio propio o en `<usuario>.github.io`, cámbiala a `'/'`.
+- `public/.nojekyll` evita el procesamiento de Jekyll; `src/pages/404.astro` genera una página 404 propia.
+- Con la base configurada, en desarrollo el sitio se sirve en `http://localhost:4321/creativeLab-proto/` (refleja la URL de producción).
+
 ## 📁 Estructura
 
 ```

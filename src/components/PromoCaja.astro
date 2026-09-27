@@ -1,0 +1,162 @@
+---
+// Banner superior que promociona la Caja CreativeLab y enlaza a /caja-creativelab/.
+// - Autocontenido: cuando está visible define --promo-h en <html> para que el
+//   header fijo y la primera sección se desplacen (ver Header.astro y Ferias.astro).
+// - Cerrable: guarda el estado en localStorage; al cerrar, --promo-h vuelve a 0
+//   y la página queda exactamente igual que sin banner.
+// - Debe renderizarse ANTES de <Header /> para aplicar el offset sin parpadeo.
+---
+
+<div class="promo-caja" id="promo-caja" role="region" aria-label="Promoción Caja CreativeLab">
+  <a class="promo-link" href="/caja-creativelab/">
+    <svg class="promo-icono" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7"></path>
+      <path d="M12 7s-2.6 0-3.6-1.5A1.9 1.9 0 0 1 11 3c.8.5 1 2 1 4z"></path>
+      <path d="M12 7s2.6 0 3.6-1.5A1.9 1.9 0 0 0 13 3c-.8.5-1 2-1 4z"></path>
+    </svg>
+    <span class="promo-texto">
+      <strong>Nueva · Caja CreativeLab con Propósito</strong>
+      <span class="promo-sub">Sorpresa mensual con impacto social</span>
+    </span>
+    <span class="promo-cta">Ver la caja →</span>
+  </a>
+  <button class="promo-cerrar" id="promo-cerrar" type="button" aria-label="Quitar promoción de la caja">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M6 6l12 12M18 6 6 18"></path>
+    </svg>
+  </button>
+</div>
+
+<style>
+  .promo-caja {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 135; /* por encima del header fijo (z-index 130) */
+    height: 44px;
+    display: flex;
+    align-items: stretch;
+    background: var(--terracota);
+    color: var(--crema);
+    box-shadow: 0 1px 0 rgba(30, 26, 24, 0.15);
+    font-family: var(--fuente-ui);
+  }
+
+  .promo-link {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-inline: 16px;
+  }
+
+  .promo-icono {
+    flex: none;
+    width: 18px;
+    height: 18px;
+  }
+
+  .promo-texto {
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .promo-texto strong {
+    font-size: 13.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .promo-sub {
+    font-size: 12.5px;
+    opacity: 0.85;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .promo-cta {
+    flex: none;
+    margin-left: auto;
+    background: var(--crema);
+    color: var(--carbon);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    transition: background-color 0.15s ease;
+  }
+
+  .promo-link:hover .promo-cta {
+    background: var(--beige);
+  }
+
+  .promo-cerrar {
+    flex: none;
+    width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--crema);
+    opacity: 0.85;
+    transition: opacity 0.15s ease, background-color 0.15s ease;
+  }
+
+  .promo-cerrar:hover {
+    opacity: 1;
+    background: rgba(30, 26, 24, 0.16);
+  }
+
+  .promo-cerrar svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .promo-link:focus-visible,
+  .promo-cerrar:focus-visible {
+    outline: 2px solid var(--crema);
+    outline-offset: -2px;
+  }
+
+  @media (max-width: 640px) {
+    .promo-sub {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .promo-icono,
+    .promo-cta {
+      display: none;
+    }
+
+    .promo-link {
+      padding-inline: 12px;
+    }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    var promo = document.getElementById('promo-caja');
+    if (!promo) return;
+    var root = document.documentElement;
+    if (localStorage.getItem('promo-caja-cerrada') === '1') {
+      promo.style.display = 'none';
+      return;
+    }
+    root.style.setProperty('--promo-h', '44px');
+    document.getElementById('promo-cerrar').addEventListener('click', function () {
+      localStorage.setItem('promo-caja-cerrada', '1');
+      root.style.setProperty('--promo-h', '0px');
+      promo.style.display = 'none';
+    });
+  })();
+</script>

@@ -1,18 +1,14 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// GitHub Pages publica los sitios de proyecto en https://<usuario>.github.io/<repo>/
-// → la ruta base debe coincidir con el nombre del repositorio.
-// Si publicas en un dominio propio o en <usuario>.github.io, cambia BASE a '/'.
-const BASE = '/creativeLab-proto';
-
-// https://docs.astro.build/en/reference/configuration-reference/
+// Despliegue en Hostinger (hosting compartido, Apache/LiteSpeed):
+// el contenido de dist/ se publica en la RAÍZ del dominio (public_html),
+// sin subruta → no se necesita `base` (por defecto '/').
+//
+// Cambia `site` por tu dominio real cuando lo tengas (se usa para
+// canonical/sitemap si algún día se agregan):
 export default defineConfig({
-  site: 'https://johan.github.io/creativeLab-proto',
-  base: BASE,
-  trailingSlash: 'ignore',
-  build: {
-    format: 'directory',
-  },
+  site: 'https://creativelab.example.com',
 });
+
 

@@ -29,32 +29,22 @@ Landing page única con configurador visual en tiempo real para tote bags, organ
 - **Precios y presets**: constantes `PRECIOS` y `PRESETS` en el mismo archivo.
 - **Paleta y tipografía**: variables en `src/styles/global.css` (Manrope, Caveat, Playfair Display).
 
-## 🚀 Despliegue en GitHub Pages
+## 🚀 Despliegue en Hostinger
 
-1. Sube el repositorio a GitHub (rama `main`).
-2. En el repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**
-   (⚠️ debe decir *GitHub Actions*, **no** *Deploy from a branch*).
-3. Cada push a `main` ejecuta `.github/workflows/deploy.yml` (build de Astro + deploy de Pages).
-4. El sitio queda publicado en `https://<tu-usuario>.github.io/creativeLab-proto/`.
+El sitio es 100 % estático: se publica el **contenido de `dist/`** en la carpeta `public_html` del dominio (raíz del dominio, sin subruta).
+
+1. Compila localmente: `npm install && npm run build`.
+2. En hPanel → **Archivos → Administrador de archivos**, entra a `public_html` del dominio elegido.
+3. Sube el **contenido** de `dist/` (no la carpeta en sí): `index.html`, `404.html`, `_astro/`, favicons, `site.webmanifest` y `.htaccess`.
+   - En el administrador de archivos activa **"Mostrar archivos ocultos"** para ver `.htaccess`; con FTP/FileZilla no hace falta.
+4. Tras cada nuevo deploy, limpia la caché de LiteSpeed: hPanel → **Avanzado → Administración de caché → Purge All**.
 
 Notas:
-- La ruta base se define en `astro.config.mjs` (`base`). Si publicas en un dominio propio o en `<usuario>.github.io`, cámbiala a `'/'`.
-- Con la base configurada, en desarrollo el sitio se sirve en `http://localhost:4321/creativeLab-proto/` (refleja la URL de producción).
 
-### 🛠️ Solución de problemas
-
-**Error `Invalid YAML front matter in .../Empresas.astro` (o cualquier `.astro`)**
-
-Ese error lo produce **Jekyll**, no Astro. Significa que GitHub Pages quedó configurado en
-*"Deploy from a branch"* y está intentando compilar el código fuente con Jekyll, que confunde
-el frontmatter `---` de los archivos `.astro` con bloques YAML.
-
-Solución (cualquiera de las dos, idealmente ambas):
-
-1. **Configura el modo correcto**: Settings → Pages → Source: **GitHub Actions**.
-2. El repo incluye `.nojekyll` en la raíz y en `dist/` (vía `public/.nojekyll`), lo que desactiva
-   Jekyll por completo incluso en el modo "Deploy from a branch".
-
+- El `.htaccess` incluido (vía `public/.htaccess`) ya configura: `ErrorDocument 404`, compresión gzip, caché **inmutable de 1 año** para los assets con hash de `_astro/`, `no-cache` para el HTML, cabeceras de seguridad y una regla de redirección a HTTPS lista para descomentar cuando actives el SSL en hPanel.
+- Si usas un subdominio o subcarpeta distinta de la raíz, avisa a Astro con `base` en `astro.config.mjs`.
+- Cambia `site` en `astro.config.mjs` por tu dominio real (útil si luego se agrega `@astrojs/sitemap` o URLs canónicas).
+- El hosting compartido de Hostinger **no ejecuta el build**: siempre compila localmente (o en tu CI favorito, p. ej. GitHub Actions → artifact → descarga) y sube el `dist/` resultante.
 
 ## 📁 Estructura
 
@@ -66,9 +56,12 @@ src/
 │   ├── Configurator.astro  # Panel flotante con 5 tabs
 │   ├── ProductMockup.astro # Mockup SVG paramétrico (3 productos)
 │   ├── Resumen.astro       # Resumen ampliado + desglose + conversión
+│   ├── PromoCaja.astro      # Banner superior cerrable que promociona la Caja
+│   ├── CajaCreativelab.astro # "Caja con Propósito" (prototipo convertido a componente)
 │   └── ...                 # ComoFunciona, Catalogo, Impacto, Empresas, Ferias, Footer
 ├── layouts/Layout.astro    # Fuentes + defs SVG (texturas y sombras)
-├── pages/index.astro       # Única página: compone todo
+├── pages/index.astro       # Landing: compone todo (+ banner PromoCaja)
+├── pages/caja-creativelab.astro # URL /caja-creativelab/: suscripción de cajas
 ├── scripts/configurator.js # Estado, precio, WhatsApp, modal, formularios
 └── styles/global.css       # Sistema de diseño (paleta, botones, toast, modal)
 ```

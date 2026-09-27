@@ -1,0 +1,53 @@
+# ============================================================
+#  CreativeLab — Apache/LiteSpeed (Hostinger)
+#  Sube el CONTENIDO de dist/ en public_html/. Este archivo viaja
+#  en public/ y Astro lo copia al build.
+# ============================================================
+
+# ---------- Charset ----------
+AddDefaultCharset UTF-8
+
+# ---------- Página 404 ----------
+# Astro emite /404.html en la raíz del build.
+ErrorDocument 404 /404.html
+
+# ---------- Compresión ----------
+# Hostinger suele tener gzip a nivel de servidor; los IfModule lo hacen
+# seguro por si estuviera desactivado en el plan.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml application/manifest+json text/plain
+</IfModule>
+
+# ---------- Caché ----------
+# HTML sin caché: los deploys se ven al instante.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html?$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  # Assets con hash de contenido de /_astro/ (ej. index.C8abldV9.css):
+  # su contenido JAMÁS cambia entre builds → un año, inmutable.
+  <FilesMatch "\.[A-Za-z0-9_-]{8}\.(css|js|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # Cabeceras de seguridad básicas
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Resto de estáticos (imágenes, manifest, fuentes sin hash): 7 días.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 7 days"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# ---------- Forzar HTTPS ----------
+# Descomenta cuando el SSL esté emitido y activado en hPanel
+# (Hosting → Administrar → Seguridad → SSL):
+#
+# RewriteEngine On
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]

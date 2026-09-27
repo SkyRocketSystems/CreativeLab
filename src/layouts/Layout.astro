@@ -11,10 +11,6 @@ const {
   title,
   description = 'CreativeLab — Crea el tuyo: personaliza tote bags, organizadores y objetos decorativos con color, materiales y mensajes que hablan de ti.',
 } = Astro.props;
-
-/* Ruta base del despliegue (GitHub Pages: /<repo>). En local o dominio
-   propio la BASE_URL es "/" y el prefijo queda vacío. */
-const base = import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL.replace(/\/+$/, '');
 ---
 
 <!doctype html>
@@ -22,11 +18,11 @@ const base = import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL.re
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
-    <link rel="icon" type="image/png" sizes="32x32" href={`${base}/favicon-32.png`} />
-    <link rel="icon" type="image/png" sizes="192x192" href={`${base}/favicon-192.png`} />
-    <link rel="apple-touch-icon" sizes="180x180" href={`${base}/apple-touch-icon.png`} />
-    <link rel="manifest" href={`${base}/site.webmanifest`} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#FAF8F3" />

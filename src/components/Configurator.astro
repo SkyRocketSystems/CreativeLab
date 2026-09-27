@@ -280,6 +280,10 @@ const extras = [
     border-radius: var(--radius-tarjeta);
     padding: 16px;
     box-shadow: var(--sombra-suave);
+    /* El panel flota sobre el preview en desktop y es angosto aunque el
+       viewport sea grande: sus rejillas internas deben medirse contra su
+       ancho real, no contra el viewport. */
+    container-type: inline-size;
   }
 
   /* Tabs */
@@ -672,20 +676,25 @@ const extras = [
     box-shadow: inset 0 0 0 1px rgba(30, 26, 24, 0.25);
   }
 
-  /* Tab extras */
+  /* Tab extras — dos columnas solo cuando el ancho REAL del panel lo permite
+     (container query). Un media query de viewport forzaba 2 columnas dentro
+     del panel flotante de desktop (~420px) y los ítems desbordaban el
+     contenedor. Sin soporte de container queries queda en 1 columna. */
   .extras-lista {
     display: grid;
     grid-template-columns: 1fr;
     gap: 8px;
   }
 
-  @media (min-width: 768px) {
+  @container (min-width: 560px) {
     .extras-lista {
       grid-template-columns: 1fr 1fr;
     }
   }
 
   .extra {
+    position: relative;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -749,6 +758,12 @@ const extras = [
     display: flex;
     flex-direction: column;
     gap: 2px;
+    min-width: 0;
+  }
+
+  .extra-nombre,
+  .extra-desc {
+    overflow-wrap: anywhere;
   }
 
   .extra-nombre {

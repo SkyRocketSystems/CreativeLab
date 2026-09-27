@@ -46,14 +46,14 @@ const diasCalendario = [
 <style>
   .seccion-ferias {
     background: var(--crema);
-    /* Primera sección de la página: compensa el header fijo */
-    padding-top: calc(var(--header-h) + 24px);
+    /* Primera sección de la página: compensa el header fijo y el banner PromoCaja */
+    padding-top: calc(var(--header-h) + var(--promo-h, 0px) + 24px);
     padding-bottom: 48px;
   }
 
   @media (min-width: 1080px) {
     .seccion-ferias {
-      padding-top: calc(var(--header-h) + 40px);
+      padding-top: calc(var(--header-h) + var(--promo-h, 0px) + 40px);
       padding-bottom: 64px;
     }
   }

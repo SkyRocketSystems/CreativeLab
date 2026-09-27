@@ -1,0 +1,775 @@
+---
+import ProductMockup from './ProductMockup.astro';
+
+const productos = [
+  { id: 'tote', nombre: 'Tote bag', precio: 40000 },
+  { id: 'organizador', nombre: 'Organizador', precio: 50000 },
+  { id: 'decorativo', nombre: 'Decorativo', precio: 60000 },
+];
+
+const colores = [
+  { id: 'natural', nombre: 'Natural', hex: '#E6DEC9' },
+  { id: 'taupe', nombre: 'Taupe', hex: '#AD8470' },
+  { id: 'terracota', nombre: 'Terracota', hex: '#C86B45' },
+  { id: 'salvia', nombre: 'Verde salvia', hex: '#B8D3AE' },
+  { id: 'carbon', nombre: 'Carbón', hex: '#1E1A18' },
+  { id: 'crema', nombre: 'Crema', hex: '#FAF8F3' },
+];
+
+const materiales = [
+  { id: 'lona', nombre: 'Lona de algodón reciclado', precio: 'Incluido' },
+  { id: 'lienzo', nombre: 'Lienzo natural', precio: 'Incluido' },
+  { id: 'impermeable', nombre: 'Tela impermeable', precio: '+$8.000 COP' },
+  { id: 'premium', nombre: 'Material recuperado premium', precio: '+$10.000 COP' },
+];
+
+const extras = [
+  { id: 'bolsillo', nombre: 'Bolsillo interior', desc: 'Práctico y discreto', precio: '+$8.000' },
+  { id: 'etiqueta', nombre: 'Etiqueta personalizada', desc: 'Tu marca en cada pieza', precio: '+$5.000' },
+  { id: 'empaque', nombre: 'Empaque para regalo', desc: 'Listo para sorprender', precio: '+$7.000' },
+  { id: 'tarjeta', nombre: 'Tarjeta con mensaje', desc: 'Dedícalo con palabras', precio: '+$3.000' },
+];
+---
+
+<div class="panel-configuracion" id="panel-configurador">
+  <div class="panel-tabs" role="tablist" aria-label="Opciones de personalización">
+    <button
+      class="tab"
+      id="tab-producto"
+      role="tab"
+      aria-selected="false"
+      aria-controls="panel-producto"
+      data-tab="producto"
+      type="button"
+      tabindex="-1"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3Z"></path><path d="M12 12l8-4.5M12 12v9M12 12 4 7.5"></path>
+      </svg>
+      <span>Producto</span>
+    </button>
+    <button
+      class="tab is-activa"
+      id="tab-color"
+      role="tab"
+      aria-selected="true"
+      aria-controls="panel-color"
+      data-tab="color"
+      type="button"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 4s6 6.2 6 10a6 6 0 0 1-12 0c0-3.8 6-10 6-10Z"></path>
+      </svg>
+      <span>Color</span>
+    </button>
+    <button
+      class="tab"
+      id="tab-material"
+      role="tab"
+      aria-selected="false"
+      aria-controls="panel-material"
+      data-tab="material"
+      type="button"
+      tabindex="-1"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 4 4 8.5 12 13l8-4.5L12 4Z"></path><path d="m4 13.5 8 4.5 8-4.5"></path>
+      </svg>
+      <span>Material</span>
+    </button>
+    <button
+      class="tab"
+      id="tab-texto"
+      role="tab"
+      aria-selected="false"
+      aria-controls="panel-texto"
+      data-tab="texto"
+      type="button"
+      tabindex="-1"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <path d="M5 6h14M12 6v13"></path>
+      </svg>
+      <span>Texto</span>
+    </button>
+    <button
+      class="tab"
+      id="tab-extras"
+      role="tab"
+      aria-selected="false"
+      aria-controls="panel-extras"
+      data-tab="extras"
+      type="button"
+      tabindex="-1"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 5l1.4 3.6L17 10l-3.6 1.4L12 15l-1.4-3.6L7 10l3.6-1.4L12 5Z"></path>
+        <path d="M18 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8.8-2Z"></path>
+      </svg>
+      <span>Extras</span>
+    </button>
+  </div>
+
+  <div class="panel-cuerpo">
+    <!-- TAB: PRODUCTO -->
+    <div class="tab-panel" id="panel-producto" role="tabpanel" aria-labelledby="tab-producto" hidden>
+      <p class="panel-titulo">Elige tu base</p>
+      <div class="productos-grid">
+        {
+          productos.map((p) => (
+            <button
+              class="opcion-producto"
+              data-elegir-producto={p.id}
+              aria-pressed={p.id === 'tote' ? 'true' : 'false'}
+              type="button"
+            >
+              <span class="opcion-thumb">
+                <ProductMockup product={p.id} color="#E6DEC9" etiqueta="" />
+              </span>
+              <span class="opcion-info">
+                <span class="opcion-nombre">{p.nombre}</span>
+                <span class="opcion-precio">Desde ${p.precio.toLocaleString('es-CO')} COP</span>
+              </span>
+              <span class="check" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12l5 5L20 7" />
+                </svg>
+              </span>
+              <span class="sr-only" data-sel />
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- TAB: COLOR (activa por defecto) -->
+    <div class="tab-panel" id="panel-color" role="tabpanel" aria-labelledby="tab-color">
+      <p class="panel-titulo">Escoge un color</p>
+      <div class="muestras" role="group" aria-label="Colores disponibles">
+        {
+          colores.map((c) => (
+            <button
+              class="muestra"
+              data-elegir-color={c.id}
+              aria-pressed={c.id === 'natural' ? 'true' : 'false'}
+              type="button"
+            >
+              <span class="muestra-chip" style={`--muestra:${c.hex}`}>
+                <span class="check" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12l5 5L20 7" />
+                  </svg>
+                </span>
+              </span>
+              <span class="muestra-nombre">{c.nombre}</span>
+              <span class="sr-only" data-sel />
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- TAB: MATERIAL -->
+    <div class="tab-panel" id="panel-material" role="tabpanel" aria-labelledby="tab-material" hidden>
+      <p class="panel-titulo">Escoge el material</p>
+      <div class="materiales-grid">
+        {
+          materiales.map((m) => (
+            <button
+              class:list={['opcion-material', `textura-${m.id}`]}
+              data-elegir-material={m.id}
+              aria-pressed={m.id === 'lona' ? 'true' : 'false'}
+              type="button"
+            >
+              <span class="material-textura" aria-hidden="true" />
+              <span class="material-info">
+                <span class="material-nombre">{m.nombre}</span>
+                <span class="material-precio">{m.precio}</span>
+              </span>
+              <span class="check" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12l5 5L20 7" />
+                </svg>
+              </span>
+              <span class="sr-only" data-sel />
+            </button>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- TAB: TEXTO -->
+    <div class="tab-panel" id="panel-texto" role="tabpanel" aria-labelledby="tab-texto" hidden>
+      <label class="panel-titulo" for="entrada-frase">Tu frase o nombre</label>
+      <div class="frase-fila">
+        <input
+          id="entrada-frase"
+          type="text"
+          maxlength="25"
+          placeholder="Ejemplo: Hecho para Laura"
+          autocomplete="off"
+        />
+        <span class="contador" id="contador-frase" aria-live="polite">0/25</span>
+      </div>
+      <p class="nota-frase" id="nota-frase">Este detalle es opcional</p>
+
+      <div class="segmentados">
+        <div class="segmento">
+          <span class="segmento-label" id="label-fuente">Tipografía</span>
+          <div class="segmento-grupo" role="group" aria-labelledby="label-fuente">
+            <button data-elegir-fuente="moderna" aria-pressed="true" type="button">Moderna</button>
+            <button data-elegir-fuente="manuscrita" aria-pressed="false" type="button">Manuscrita</button>
+            <button data-elegir-fuente="clasica" aria-pressed="false" type="button">Clásica</button>
+          </div>
+        </div>
+        <div class="segmento">
+          <span class="segmento-label" id="label-colortexto">Color del texto</span>
+          <div class="segmento-grupo" role="group" aria-labelledby="label-colortexto">
+            <button data-elegir-colortexto="carbon" aria-pressed="true" type="button">
+              <span class="punto" style="--punto:#1E1A18" aria-hidden="true"></span>Carbón
+            </button>
+            <button data-elegir-colortexto="crema" aria-pressed="false" type="button">
+              <span class="punto" style="--punto:#FAF8F3" aria-hidden="true"></span>Crema
+            </button>
+            <button data-elegir-colortexto="terracota" aria-pressed="false" type="button">
+              <span class="punto" style="--punto:#C86B45" aria-hidden="true"></span>Terracota
+            </button>
+          </div>
+        </div>
+        <div class="segmento">
+          <span class="segmento-label" id="label-posicion">Ubicación</span>
+          <div class="segmento-grupo" role="group" aria-labelledby="label-posicion">
+            <button data-elegir-posicion="centro" aria-pressed="true" type="button">Centro</button>
+            <button data-elegir-posicion="inferior" aria-pressed="false" type="button">Inferior</button>
+            <button data-elegir-posicion="esquina" aria-pressed="false" type="button">Esquina</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: EXTRAS -->
+    <div class="tab-panel" id="panel-extras" role="tabpanel" aria-labelledby="tab-extras" hidden>
+      <p class="panel-titulo">Añade detalles extra</p>
+      <div class="extras-lista">
+        {
+          extras.map((e) => (
+            <label class="extra">
+              <input type="checkbox" data-extra={e.id} />
+              <span class="interruptor" aria-hidden="true">
+                <span class="interruptor-pulgar" />
+              </span>
+              <span class="extra-info">
+                <span class="extra-nombre">{e.nombre}</span>
+                <span class="extra-desc">{e.desc}</span>
+              </span>
+              <span class="extra-precio">{e.precio}</span>
+            </label>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .panel-configuracion {
+    background: rgba(250, 248, 243, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(230, 222, 201, 0.9);
+    border-radius: var(--radius-tarjeta);
+    padding: 16px;
+    box-shadow: var(--sombra-suave);
+  }
+
+  /* Tabs */
+  .panel-tabs {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .panel-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 40px;
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(30, 26, 24, 0.66);
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .tab svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .tab:hover {
+    color: var(--carbon);
+    background: rgba(230, 222, 201, 0.45);
+  }
+
+  .tab.is-activa {
+    background: var(--beige);
+    color: var(--terracota);
+    border-color: rgba(200, 107, 69, 0.35);
+  }
+
+  /* Cuerpo */
+  .panel-cuerpo {
+    padding-top: 14px;
+  }
+
+  .panel-titulo {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(30, 26, 24, 0.7);
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  /* Producto */
+  .productos-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .opcion-producto {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px;
+    border-radius: 16px;
+    border: 1.5px solid transparent;
+    background: var(--crema);
+    text-align: left;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .opcion-producto:hover {
+    border-color: var(--beige-linea);
+  }
+
+  .opcion-producto.is-selected {
+    border-color: var(--terracota);
+    box-shadow: 0 6px 16px rgba(200, 107, 69, 0.16);
+  }
+
+  .opcion-thumb {
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--beige-suave);
+  }
+
+  .opcion-thumb :global(.mockup) {
+    pointer-events: none;
+  }
+
+  .opcion-nombre {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .opcion-precio {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: rgba(30, 26, 24, 0.62);
+  }
+
+  /* Check compartido */
+  .check {
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .is-selected > .check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 50%;
+    background: var(--terracota);
+    color: var(--crema);
+  }
+
+  .is-selected > .check svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Muestras de color */
+  .muestras {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 4px 2px 6px;
+    scrollbar-width: thin;
+  }
+
+  .muestra {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 68px;
+    padding: 6px 4px;
+    border-radius: 14px;
+    transition: background-color 0.15s ease;
+  }
+
+  .muestra:hover {
+    background: rgba(230, 222, 201, 0.5);
+  }
+
+  .muestra-chip {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--muestra);
+    border: 2px solid transparent;
+    box-shadow: inset 0 0 0 1px rgba(30, 26, 24, 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .muestra.is-selected .muestra-chip {
+    border-color: var(--terracota);
+    box-shadow: 0 6px 14px rgba(200, 107, 69, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .muestra-chip .check {
+    color: #fff;
+    filter: drop-shadow(0 1px 2px rgba(30, 26, 24, 0.5));
+  }
+
+  .muestra.is-selected .muestra-chip .check {
+    display: flex;
+    width: 20px;
+    height: 20px;
+  }
+
+  .muestra-chip .check svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .muestra-nombre {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: rgba(30, 26, 24, 0.7);
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .muestra.is-selected .muestra-nombre {
+    color: var(--terracota);
+  }
+
+  /* Materiales */
+  .materiales-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  @media (min-width: 768px) {
+    .materiales-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .opcion-material {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 16px;
+    border: 1.5px solid transparent;
+    background: var(--crema);
+    text-align: left;
+    min-height: 88px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .opcion-material:hover {
+    border-color: var(--beige-linea);
+  }
+
+  .opcion-material.is-selected {
+    border-color: var(--terracota);
+    box-shadow: 0 6px 16px rgba(200, 107, 69, 0.16);
+  }
+
+  .material-textura {
+    height: 40px;
+    border-radius: 10px;
+    background: var(--beige);
+  }
+
+  .textura-lona .material-textura {
+    background-image: repeating-linear-gradient(
+        0deg,
+        rgba(30, 26, 24, 0.14) 0 1px,
+        transparent 1px 6px
+      ),
+      repeating-linear-gradient(90deg, rgba(30, 26, 24, 0.14) 0 1px, transparent 1px 6px);
+  }
+
+  .textura-lienzo .material-textura {
+    background-image: radial-gradient(rgba(30, 26, 24, 0.16) 1px, transparent 1.2px);
+    background-size: 8px 8px;
+  }
+
+  .textura-impermeable .material-textura {
+    background-image: linear-gradient(135deg, rgba(250, 248, 243, 0.75), rgba(230, 222, 201, 0.2));
+  }
+
+  .textura-premium .material-textura {
+    background-image: repeating-linear-gradient(
+      48deg,
+      rgba(30, 26, 24, 0.16) 0 3px,
+      transparent 3px 9px,
+      rgba(30, 26, 24, 0.1) 9px 11px,
+      transparent 11px 16px
+    );
+  }
+
+  .material-nombre {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .material-precio {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--terracota);
+  }
+
+  .opcion-material.is-selected .material-precio {
+    color: var(--terracota);
+  }
+
+  /* Tab texto */
+  .frase-fila {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--crema);
+    border: 1.5px solid var(--beige-linea);
+    border-radius: 14px;
+    padding: 4px 14px 4px 4px;
+  }
+
+  .frase-fila input {
+    flex: 1;
+    min-height: 44px;
+    border: none;
+    background: transparent;
+    padding: 8px 4px 8px 12px;
+    font-size: 15px;
+    color: var(--carbon);
+  }
+
+  .frase-fila input:focus {
+    outline: none;
+  }
+
+  .frase-fila:focus-within {
+    border-color: var(--terracota);
+  }
+
+  .contador {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(30, 26, 24, 0.55);
+    white-space: nowrap;
+  }
+
+  .nota-frase {
+    font-size: 12px;
+    color: rgba(30, 26, 24, 0.55);
+    margin-top: 6px;
+  }
+
+  .segmentados {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    margin-top: 14px;
+  }
+
+  .segmento {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .segmento-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(30, 26, 24, 0.6);
+  }
+
+  .segmento-grupo {
+    display: inline-flex;
+    background: var(--beige-suave);
+    border: 1px solid var(--beige-linea);
+    border-radius: var(--radius-pill);
+    padding: 3px;
+  }
+
+  .segmento-grupo button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 38px;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(30, 26, 24, 0.65);
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+
+  .segmento-grupo button:hover {
+    color: var(--carbon);
+  }
+
+  .segmento-grupo button[aria-pressed='true'] {
+    background: var(--crema);
+    color: var(--terracota);
+    box-shadow: var(--sombra-tarjeta);
+  }
+
+  .punto {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--punto);
+    box-shadow: inset 0 0 0 1px rgba(30, 26, 24, 0.25);
+  }
+
+  /* Tab extras */
+  .extras-lista {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  @media (min-width: 768px) {
+    .extras-lista {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .extra {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    border: 1.5px solid transparent;
+    background: var(--crema);
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+  }
+
+  .extra:hover {
+    border-color: var(--beige-linea);
+  }
+
+  .extra input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+  .extra .interruptor {
+    width: 48px;
+    min-width: 48px;
+    height: 28px;
+    border-radius: var(--radius-pill);
+    background: var(--beige);
+    border: 1px solid var(--beige-linea);
+    position: relative;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+  }
+
+  .extra .interruptor-pulgar {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--crema);
+    box-shadow: 0 2px 5px rgba(30, 26, 24, 0.25);
+    transition: transform 0.18s ease;
+  }
+
+  .extra input:checked + .interruptor {
+    background: var(--terracota);
+    border-color: var(--terracota);
+  }
+
+  .extra input:checked + .interruptor .interruptor-pulgar {
+    transform: translateX(20px);
+  }
+
+  .extra input:focus-visible + .interruptor {
+    outline: 2px solid var(--terracota);
+    outline-offset: 2px;
+  }
+
+  .extra-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .extra-nombre {
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  .extra-desc {
+    font-size: 12px;
+    color: rgba(30, 26, 24, 0.58);
+  }
+
+  .extra-precio {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--terracota);
+    white-space: nowrap;
+  }
+</style>
+
+
+
+

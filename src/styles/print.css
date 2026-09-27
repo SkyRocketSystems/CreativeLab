@@ -1,0 +1,152 @@
+/* ============================================================
+   CreativeLab — Optimización de impresión / exportar a PDF
+   Se activa automáticamente con Imprimir > Guardar como PDF
+   ============================================================ */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  /* Paleta fiel en papel (fondos crema, beige, salvia, taupe, carbón) */
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  html {
+    background: #ffffff;
+  }
+
+  body {
+    background: var(--crema);
+  }
+
+  /* Elementos fijos/interactivos que no deben salir en papel */
+  #cabecera,
+  #menu-movil,
+  #barra-movil,
+  #toast,
+  #modal-vista,
+  .preview-ampliar,
+  .flecha-circulo {
+    display: none !important;
+  }
+
+  /* El hero de ferias no necesita compensar el header fijo en papel */
+  #ferias {
+    padding-top: 8px !important;
+  }
+
+  /* Tipografía compacta para papel */
+  h1 {
+    font-size: 34px !important;
+    line-height: 1.08 !important;
+  }
+
+  h2 {
+    font-size: 26px !important;
+    line-height: 1.15 !important;
+  }
+
+  .seccion {
+    padding-block: 40px !important;
+  }
+
+  /* Canvas del hero sin sombra ni límites de pantalla */
+  .hero-canvas {
+    box-shadow: none !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* Bento apilado: flujo vertical legible en papel */
+  .hero-bento {
+    display: block !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+  }
+
+  .hero-bento > * {
+    margin-bottom: 16px;
+  }
+
+  /* Preview y configurador en flujo normal (sin superposición) */
+  .preview-wrap {
+    display: block !important;
+  }
+
+  .preview-producto {
+    position: static !important;
+    padding: 24px !important;
+  }
+
+  .preview-wrap .panel-configuracion {
+    position: static !important;
+    width: 100% !important;
+    margin-top: 16px;
+    background: var(--crema) !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Configurador completo: todas las pestañas visibles en el PDF */
+  .panel-tabs {
+    display: none !important;
+  }
+
+  .tab-panel {
+    display: block !important;
+    margin-bottom: 14px;
+    break-inside: avoid;
+  }
+
+  /* Filas con scroll lateral: mostrar todos los elementos */
+  .muestras,
+  .presets {
+    overflow: visible !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* El mockup queda limpio, sin sombra de pantalla */
+  .mockup {
+    filter: none !important;
+  }
+
+  /* Evitar cortes de tarjetas entre páginas */
+  .bloque,
+  .mini-catalogo,
+  .resumen-tarjeta,
+  .paso,
+  .producto-card,
+  .empresas-form,
+  .empresas-confirmacion,
+  .ferias-tarjeta,
+  .agenda,
+  .opcion-producto,
+  .opcion-material,
+  .extra,
+  .preset,
+  .lista-elecciones {
+    break-inside: avoid;
+  }
+
+  /* Cada gran sección arranca en página nueva: dossier limpio */
+  #resumen,
+  #como-funciona,
+  #catalogo,
+  #impacto,
+  #empresas {
+    break-before: page;
+  }
+
+  .pie {
+    break-inside: avoid;
+  }
+}

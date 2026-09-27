@@ -1,0 +1,201 @@
+---
+const productosInteres = ['Tote bags', 'Organizadores', 'Decorativos', 'Mixto'];
+const cantidades = ['10 a 25 unidades', '26 a 50 unidades', '51 a 100 unidades', 'Más de 100 unidades'];
+---
+
+<section class="seccion seccion-empresas" id="empresas" aria-label="Pedidos corporativos">
+  <div class="contenedor">
+    <div class="empresas-grid">
+      <div class="empresas-info">
+        <p class="etiqueta-seccion">Empresas</p>
+        <h2>Productos que representan a tu empresa</h2>
+        <p class="empresas-texto">
+          Personaliza regalos corporativos para equipos, clientes, eventos y campañas.
+        </p>
+        <ul class="empresas-puntos">
+          <li>Volúmenes desde 10 unidades</li>
+          <li>Marca y mensajes personalizados</li>
+          <li>Cotización y acompañamiento dedicado</li>
+        </ul>
+      </div>
+
+      <form class="empresas-form" id="formulario-empresas" novalidate>
+        <h3>Solicita tu cotización</h3>
+        <div class="form-grid">
+          <div class="campo">
+            <label for="emp-nombre">Nombre *</label>
+            <input id="emp-nombre" name="nombre" type="text" autocomplete="name" required />
+            <span class="campo-error">Escribe tu nombre.</span>
+          </div>
+          <div class="campo">
+            <label for="emp-empresa">Empresa *</label>
+            <input id="emp-empresa" name="empresa" type="text" autocomplete="organization" required />
+            <span class="campo-error">Escribe el nombre de tu empresa.</span>
+          </div>
+          <div class="campo">
+            <label for="emp-contacto">Correo o WhatsApp *</label>
+            <input id="emp-contacto" name="contacto" type="text" autocomplete="email" required />
+            <span class="campo-error">Déjanos un correo o WhatsApp para contactarte.</span>
+          </div>
+          <div class="campo">
+            <label for="emp-cantidad">Cantidad aproximada</label>
+            <select id="emp-cantidad" name="cantidad">
+              {cantidades.map((c) => <option value={c}>{c}</option>)}
+            </select>
+          </div>
+          <div class="campo">
+            <label for="emp-producto">Producto de interés</label>
+            <select id="emp-producto" name="producto">
+              {productosInteres.map((p) => <option value={p}>{p}</option>)}
+            </select>
+          </div>
+          <div class="campo">
+            <label for="emp-fecha">Fecha estimada</label>
+            <input id="emp-fecha" name="fecha" type="date" />
+          </div>
+          <div class="campo campo-completo">
+            <label for="emp-comentarios">Comentarios</label>
+            <textarea id="emp-comentarios" name="comentarios" placeholder="Cuéntanos sobre tu evento, equipos o campaña"></textarea>
+          </div>
+        </div>
+        <button class="btn btn-primario" type="submit">Solicitar cotización</button>
+      </form>
+
+      <div class="empresas-confirmacion" id="confirmacion-empresas" hidden>
+        <span class="confirmacion-icono" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12l5 5L20 7"></path>
+          </svg>
+        </span>
+        <h3>¡Solicitud recibida!</h3>
+        <p>Recibimos tu solicitud. Te contactaremos para construir una propuesta personalizada.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .seccion-empresas {
+    background: var(--taupe);
+  }
+
+  .empresas-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  @media (min-width: 1080px) {
+    .empresas-grid {
+      grid-template-columns: 1fr 1.2fr;
+      gap: 48px;
+      align-items: start;
+    }
+  }
+
+  .empresas-info .etiqueta-seccion {
+    color: rgba(250, 248, 243, 0.75);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .empresas-info h2 {
+    color: var(--crema);
+  }
+
+  .empresas-texto {
+    color: rgba(250, 248, 243, 0.85);
+    font-size: 17px;
+    margin-top: 16px;
+    max-width: 44ch;
+  }
+
+  .empresas-puntos {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0;
+  }
+
+  .empresas-puntos li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--crema);
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .empresas-puntos li::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    min-width: 8px;
+    border-radius: 50%;
+    background: var(--crema);
+  }
+
+  .empresas-form,
+  .empresas-confirmacion {
+    background: var(--crema);
+    border-radius: var(--radius-tarjeta);
+    padding: 24px;
+    box-shadow: var(--sombra-suave);
+  }
+
+  .empresas-form h3,
+  .empresas-confirmacion h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  @media (min-width: 640px) {
+    .form-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .campo-completo {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .empresas-confirmacion {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-block: 48px;
+  }
+
+  .confirmacion-icono {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--salvia);
+    color: var(--carbon);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .confirmacion-icono svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .empresas-confirmacion p {
+    color: rgba(30, 26, 24, 0.72);
+    max-width: 40ch;
+  }
+</style>

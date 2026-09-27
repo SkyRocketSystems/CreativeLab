@@ -1,0 +1,85 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Resumen from '../components/Resumen.astro';
+import ComoFunciona from '../components/ComoFunciona.astro';
+import Catalogo from '../components/Catalogo.astro';
+import Impacto from '../components/Impacto.astro';
+import Empresas from '../components/Empresas.astro';
+import Ferias from '../components/Ferias.astro';
+import Footer from '../components/Footer.astro';
+import ProductMockup from '../components/ProductMockup.astro';
+---
+
+<Layout title="CreativeLab — Crea el tuyo">
+  <Header />
+  <main id="contenido">
+    <Ferias />
+    <Hero />
+    <Resumen />
+    <ComoFunciona />
+    <Catalogo />
+    <Impacto />
+    <Empresas />
+  </main>
+  <Footer />
+
+  <!-- Modal de vista ampliada -->
+  <div id="modal-vista" role="dialog" aria-modal="true" aria-labelledby="modal-titulo" hidden>
+    <div class="modal-fondo" data-cerrar-modal></div>
+    <div class="modal-caja">
+      <button class="modal-cerrar" id="modal-cerrar" type="button" aria-label="Cerrar vista ampliada">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18"></path>
+        </svg>
+      </button>
+      <h2 class="modal-titulo" id="modal-titulo">Tote bag · Natural</h2>
+      <p class="modal-subtitulo">Vista ampliada de tu diseño</p>
+      <div class="modal-producto">
+        <ProductMockup stateful={true} product="tote" color="#E6DEC9" etiqueta="Vista ampliada de tu diseño" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra sticky móvil -->
+  <div id="barra-movil">
+    <span class="barra-precio">
+      Total: <strong id="barra-precio">$40.000 COP</strong>
+    </span>
+    <button class="btn btn-primario" data-accion="whatsapp" type="button">Pedir por WhatsApp</button>
+  </div>
+
+  <!-- Toast global -->
+  <div id="toast" role="status" aria-live="polite"></div>
+</Layout>
+
+<script src="../scripts/configurator.js"></script>
+
+<style>
+  .modal-titulo {
+    font-size: 20px;
+    font-weight: 700;
+    padding-right: 48px;
+  }
+
+  .modal-subtitulo {
+    font-size: 13px;
+    color: rgba(30, 26, 24, 0.55);
+    margin-top: 2px;
+    margin-bottom: 12px;
+  }
+
+  .modal-producto {
+    background: linear-gradient(160deg, #f0eadb 0%, var(--beige) 100%);
+    border-radius: var(--radius-tarjeta);
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .modal-producto :global(.mockup) {
+    width: min(80%, 420px);
+  }
+</style>
+

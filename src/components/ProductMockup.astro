@@ -1,0 +1,420 @@
+---
+interface Props {
+  product?: 'tote' | 'organizador' | 'decorativo';
+  color?: string;
+  material?: 'lona' | 'lienzo' | 'impermeable' | 'premium';
+  stateful?: boolean;
+  etiqueta?: string;
+}
+
+const {
+  product = 'tote',
+  color = '#E6DEC9',
+  material = 'lona',
+  stateful = false,
+  etiqueta = 'Vista previa del producto',
+} = Astro.props;
+---
+
+<div
+  class:list={['mockup', { stateful }]}
+  data-product={product}
+  data-material={material}
+  data-pocket="off"
+  data-label="off"
+  data-pos="centro"
+  data-fuente="moderna"
+  data-colortexto="carbon"
+  style={`--fabric:${color}`}
+  role="img"
+  aria-label={etiqueta}
+>
+  <div class="mockup-stage">
+    <svg
+      viewBox="0 0 400 440"
+      fill="none"
+      shape-rendering="geometricPrecision"
+      text-rendering="geometricPrecision"
+      aria-hidden="true"
+    >
+      <ellipse
+        cx="200"
+        cy="422"
+        rx="146"
+        ry="13"
+        fill="rgba(30,26,24,.30)"
+        filter="url(#difuminado)"></ellipse>
+
+      <!-- ============ TOTE BAG ============ -->
+      <g class="p-tote">
+        <path
+          d="M168 132 C168 70 232 70 232 132"
+          stroke="var(--fabric-darker)"
+          stroke-width="13"
+          stroke-linecap="round"></path>
+        <path
+          class="cuerpo"
+          d="M80 132 L320 132 L308 404 Q306 416 294 416 L106 416 Q94 416 92 404 Z"
+          fill="var(--fabric)"></path>
+        <path
+          class="cuerpo tex"
+          d="M80 132 L320 132 L308 404 Q306 416 294 416 L106 416 Q94 416 92 404 Z"></path>
+        <path
+          class="cuerpo"
+          d="M80 132 L320 132 L308 404 Q306 416 294 416 L106 416 Q94 416 92 404 Z"
+          fill="url(#sombra-v)"></path>
+        <path
+          class="cuerpo"
+          d="M80 132 L320 132 L308 404 Q306 416 294 416 L106 416 Q94 416 92 404 Z"
+          fill="url(#sombra-h)"></path>
+        <path d="M80 132 L320 132 L317.5 160 L82.5 160 Z" fill="var(--fabric-dark)"></path>
+        <path d="M88 170 L312 170" stroke="var(--stitch)" stroke-width="1.8" stroke-dasharray="6 5"></path>
+        <path
+          d="M94 180 L306 180 L296 402 Q294 406 288 406 L112 406 Q106 406 104 402 Z"
+          stroke="var(--stitch)"
+          stroke-width="1.8"
+          stroke-dasharray="6 5"></path>
+        <path d="M104 388 Q200 398 296 388" stroke="rgba(30,26,24,.10)" stroke-width="2"></path>
+        <path
+          d="M146 132 C146 58 254 58 254 132"
+          stroke="var(--fabric-dark)"
+          stroke-width="14"
+          stroke-linecap="round"></path>
+        <path
+          d="M148 128 C148 64 252 64 252 128"
+          stroke="rgba(250,248,243,.20)"
+          stroke-width="4"
+          stroke-linecap="round"></path>
+        <g class="p-pocket">
+          <rect
+            x="212"
+            y="310"
+            width="96"
+            height="78"
+            rx="10"
+            fill="var(--fabric-pocket)"
+            stroke="rgba(30,26,24,.20)"
+            stroke-width="1.5"></rect>
+          <rect
+            x="220"
+            y="322"
+            width="80"
+            height="58"
+            rx="6"
+            fill="none"
+            stroke="var(--stitch)"
+            stroke-width="1.6"
+            stroke-dasharray="5 4"></rect>
+          <path d="M212 328 L308 328" stroke="rgba(30,26,24,.16)" stroke-width="2"></path>
+        </g>
+        <g class="p-etiqueta" transform="rotate(-8 300 128)">
+          <rect
+            x="272"
+            y="112"
+            width="62"
+            height="32"
+            rx="7"
+            fill="#FAF8F3"
+            stroke="rgba(30,26,24,.28)"
+            stroke-width="1.4"></rect>
+          <rect x="282" y="122" width="26" height="4" rx="2" fill="#AD8470"></rect>
+          <rect x="282" y="130" width="38" height="3" rx="1.5" fill="rgba(30,26,24,.25)"></rect>
+          <path d="M272 118 L256 128" stroke="rgba(30,26,24,.30)" stroke-width="1.6" stroke-dasharray="3 3"></path>
+        </g>
+      </g>
+
+      <!-- ============ ORGANIZADOR ============ -->
+      <g class="p-organizador">
+        <rect x="44" y="158" width="20" height="36" rx="10" fill="var(--fabric-darker)"></rect>
+        <rect x="336" y="158" width="20" height="36" rx="10" fill="var(--fabric-darker)"></rect>
+        <path
+          class="cuerpo"
+          d="M78 194 L322 194 L310 402 Q308 414 296 414 L104 414 Q92 414 90 402 Z"
+          fill="var(--fabric)"></path>
+        <path
+          class="cuerpo tex"
+          d="M78 194 L322 194 L310 402 Q308 414 296 414 L104 414 Q92 414 90 402 Z"></path>
+        <path
+          class="cuerpo"
+          d="M78 194 L322 194 L310 402 Q308 414 296 414 L104 414 Q92 414 90 402 Z"
+          fill="url(#sombra-v)"></path>
+        <path
+          class="cuerpo"
+          d="M78 194 L322 194 L310 402 Q308 414 296 414 L104 414 Q92 414 90 402 Z"
+          fill="url(#sombra-h)"></path>
+        <rect x="62" y="148" width="276" height="46" rx="16" fill="var(--fabric-dark)"></rect>
+        <rect x="66" y="152" width="268" height="10" rx="5" fill="rgba(250,248,243,.16)"></rect>
+        <rect
+          x="72"
+          y="160"
+          width="256"
+          height="24"
+          rx="9"
+          fill="none"
+          stroke="var(--stitch)"
+          stroke-width="1.6"
+          stroke-dasharray="5 4"></rect>
+        <path d="M96 210 L304 210" stroke="var(--stitch)" stroke-width="1.8" stroke-dasharray="6 5"></path>
+        <path d="M138 214 L146 402" stroke="rgba(30,26,24,.08)" stroke-width="2"></path>
+        <path d="M262 214 L254 402" stroke="rgba(30,26,24,.08)" stroke-width="2"></path>
+        <g class="p-pocket">
+          <rect
+            x="212"
+            y="306"
+            width="96"
+            height="76"
+            rx="10"
+            fill="var(--fabric-pocket)"
+            stroke="rgba(30,26,24,.20)"
+            stroke-width="1.5"></rect>
+          <rect
+            x="220"
+            y="318"
+            width="80"
+            height="56"
+            rx="6"
+            fill="none"
+            stroke="var(--stitch)"
+            stroke-width="1.6"
+            stroke-dasharray="5 4"></rect>
+          <path d="M212 324 L308 324" stroke="rgba(30,26,24,.16)" stroke-width="2"></path>
+        </g>
+        <g class="p-etiqueta" transform="rotate(-6 300 150)">
+          <rect
+            x="282"
+            y="138"
+            width="58"
+            height="30"
+            rx="7"
+            fill="#FAF8F3"
+            stroke="rgba(30,26,24,.28)"
+            stroke-width="1.4"></rect>
+          <rect x="291" y="147" width="24" height="4" rx="2" fill="#AD8470"></rect>
+          <rect x="291" y="155" width="36" height="3" rx="1.5" fill="rgba(30,26,24,.25)"></rect>
+        </g>
+      </g>
+
+      <!-- ============ DECORATIVO (cojín) ============ -->
+      <g class="p-decorativo">
+        <path
+          d="M296 118 q20 -18 38 -4"
+          stroke="var(--fabric-darker)"
+          stroke-width="9"
+          stroke-linecap="round"></path>
+        <rect x="84" y="118" width="232" height="236" rx="58" fill="var(--fabric)"></rect>
+        <rect class="tex" x="84" y="118" width="232" height="236" rx="58"></rect>
+        <rect x="84" y="118" width="232" height="236" rx="58" fill="url(#sombra-hinchado)"></rect>
+        <rect
+          x="98"
+          y="132"
+          width="204"
+          height="208"
+          rx="46"
+          fill="none"
+          stroke="var(--stitch)"
+          stroke-width="1.8"
+          stroke-dasharray="6 5"></rect>
+        <path d="M116 296 q44 20 88 8" stroke="rgba(30,26,24,.08)" stroke-width="2" fill="none"></path>
+        <g class="p-pocket">
+          <rect
+            x="210"
+            y="240"
+            width="86"
+            height="66"
+            rx="12"
+            fill="var(--fabric-pocket)"
+            stroke="rgba(30,26,24,.20)"
+            stroke-width="1.5"></rect>
+          <rect
+            x="218"
+            y="250"
+            width="70"
+            height="46"
+            rx="8"
+            fill="none"
+            stroke="var(--stitch)"
+            stroke-width="1.6"
+            stroke-dasharray="5 4"></rect>
+        </g>
+        <g class="p-etiqueta" transform="rotate(-10 270 108)">
+          <rect
+            x="248"
+            y="94"
+            width="56"
+            height="28"
+            rx="7"
+            fill="#FAF8F3"
+            stroke="rgba(30,26,24,.28)"
+            stroke-width="1.4"></rect>
+          <rect x="256" y="102" width="22" height="4" rx="2" fill="#AD8470"></rect>
+          <rect x="256" y="110" width="32" height="3" rx="1.5" fill="rgba(30,26,24,.25)"></rect>
+        </g>
+      </g>
+    </svg>
+    <div class="mockup-phrase" aria-hidden="true"></div>
+  </div>
+</div>
+
+<style>
+  .mockup {
+    --fabric: #e6dec9;
+    --fabric-dark: color-mix(in srgb, var(--fabric) 84%, #1e1a18);
+    --fabric-darker: color-mix(in srgb, var(--fabric) 68%, #1e1a18);
+    --fabric-pocket: color-mix(in srgb, var(--fabric) 90%, #1e1a18);
+    --stitch: rgba(30, 26, 24, 0.38);
+    position: relative;
+    filter: drop-shadow(0 10px 14px rgba(30, 26, 24, 0.1));
+  }
+
+  .mockup-stage {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 400 / 440;
+    container-type: inline-size;
+  }
+
+  .mockup-stage > svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Visibilidad por producto */
+  .p-tote,
+  .p-organizador,
+  .p-decorativo {
+    display: none;
+  }
+
+  .mockup[data-product='tote'] .p-tote,
+  .mockup[data-product='organizador'] .p-organizador,
+  .mockup[data-product='decorativo'] .p-decorativo {
+    display: block;
+  }
+
+  /* Bolsillo y etiqueta */
+  .p-pocket,
+  .p-etiqueta {
+    display: none;
+  }
+
+  .mockup[data-pocket='on'] .p-pocket,
+  .mockup[data-label='on'] .p-etiqueta {
+    display: block;
+  }
+
+  /* Texturas por material */
+  .tex {
+    fill: url(#tex-lona);
+  }
+
+  .mockup[data-material='lienzo'] .tex {
+    fill: url(#tex-lienzo);
+  }
+
+  .mockup[data-material='impermeable'] .tex {
+    fill: url(#tex-impermeable);
+  }
+
+  .mockup[data-material='premium'] .tex {
+    fill: url(#tex-premium);
+  }
+
+  /* Tipografía y color de la frase */
+  .mockup[data-fuente='moderna'] {
+    --fuente-frase: var(--fuente-ui);
+  }
+
+  .mockup[data-fuente='manuscrita'] {
+    --fuente-frase: var(--fuente-manuscrita);
+  }
+
+  .mockup[data-fuente='clasica'] {
+    --fuente-frase: var(--fuente-clasica);
+  }
+
+  .mockup[data-colortexto='carbon'] {
+    --color-frase: #1e1a18;
+  }
+
+  .mockup[data-colortexto='crema'] {
+    --color-frase: #faf8f3;
+  }
+
+  .mockup[data-colortexto='terracota'] {
+    --color-frase: #c86b45;
+  }
+
+  /* Frase estampada */
+  .mockup-phrase {
+    position: absolute;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--fuente-frase, var(--fuente-ui));
+    font-weight: 600;
+    color: var(--color-frase, #1e1a18);
+    font-size: clamp(14px, 6.5cqw, 34px);
+    line-height: 1.18;
+    word-break: break-word;
+    pointer-events: none;
+  }
+
+  .mockup.stateful .mockup-phrase:not(:empty) {
+    display: flex;
+  }
+
+  .mockup[data-fuente='manuscrita'] .mockup-phrase {
+    font-size: clamp(16px, 8cqw, 40px);
+  }
+
+  /* Zonas de la frase — TOTE */
+  .mockup[data-product='tote'][data-pos='centro'] .mockup-phrase {
+    inset: 36% 20% 34% 20%;
+  }
+
+  .mockup[data-product='tote'][data-pos='inferior'] .mockup-phrase {
+    inset: 54% 24% 28% 24%;
+  }
+
+  .mockup[data-product='tote'][data-pos='esquina'] .mockup-phrase {
+    inset: 58% 46% 20% 12%;
+    justify-content: flex-start;
+    text-align: left;
+    font-size: clamp(12px, 5cqw, 24px);
+  }
+
+  /* Zonas — ORGANIZADOR */
+  .mockup[data-product='organizador'][data-pos='centro'] .mockup-phrase {
+    inset: 46% 20% 30% 20%;
+  }
+
+  .mockup[data-product='organizador'][data-pos='inferior'] .mockup-phrase {
+    inset: 60% 24% 22% 24%;
+  }
+
+  .mockup[data-product='organizador'][data-pos='esquina'] .mockup-phrase {
+    inset: 56% 44% 20% 10%;
+    justify-content: flex-start;
+    text-align: left;
+    font-size: clamp(12px, 5cqw, 24px);
+  }
+
+  /* Zonas — DECORATIVO */
+  .mockup[data-product='decorativo'][data-pos='centro'] .mockup-phrase {
+    inset: 38% 18% 40% 18%;
+  }
+
+  .mockup[data-product='decorativo'][data-pos='inferior'] .mockup-phrase {
+    inset: 50% 22% 34% 22%;
+  }
+
+  .mockup[data-product='decorativo'][data-pos='esquina'] .mockup-phrase {
+    inset: 30% 44% 46% 16%;
+    justify-content: flex-start;
+    text-align: left;
+    font-size: clamp(12px, 5.5cqw, 26px);
+  }
+</style>
+
+

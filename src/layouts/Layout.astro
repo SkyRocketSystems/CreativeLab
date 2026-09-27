@@ -1,0 +1,90 @@
+---
+import '../styles/global.css';
+import '../styles/print.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'CreativeLab — Crea el tuyo: personaliza tote bags, organizadores y objetos decorativos con color, materiales y mensajes que hablan de ti.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#FAF8F3" />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <svg
+      class="defs-globales"
+      width="0"
+      height="0"
+      style="position:absolute"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <pattern id="tex-lona" width="6" height="6" patternUnits="userSpaceOnUse">
+          <path d="M0 3h6M3 0v6" stroke="rgba(30,26,24,.10)" stroke-width="1"></path>
+        </pattern>
+        <pattern id="tex-lienzo" width="9" height="9" patternUnits="userSpaceOnUse">
+          <circle cx="2.5" cy="2.5" r=".8" fill="rgba(30,26,24,.09)"></circle>
+          <circle cx="6.8" cy="6.8" r=".8" fill="rgba(30,26,24,.09)"></circle>
+        </pattern>
+        <linearGradient id="tex-impermeable" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(250,248,243,.34)"></stop>
+          <stop offset=".45" stop-color="rgba(250,248,243,.05)"></stop>
+          <stop offset="1" stop-color="rgba(250,248,243,.18)"></stop>
+        </linearGradient>
+        <pattern id="tex-premium" width="12" height="12" patternUnits="userSpaceOnUse">
+          <path
+            d="M1 9q2-2.4 4.4 0M6.5 2.5q1.8-1.8 3.6 0"
+            fill="none"
+            stroke="rgba(30,26,24,.13)"
+            stroke-width="1.1"
+            stroke-linecap="round"></path>
+        </pattern>
+        <linearGradient id="sombra-v" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="rgba(250,248,243,.30)"></stop>
+          <stop offset=".28" stop-color="rgba(250,248,243,0)"></stop>
+          <stop offset=".8" stop-color="rgba(30,26,24,.05)"></stop>
+          <stop offset="1" stop-color="rgba(30,26,24,.16)"></stop>
+        </linearGradient>
+        <linearGradient id="sombra-h" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="rgba(30,26,24,.14)"></stop>
+          <stop offset=".18" stop-color="rgba(30,26,24,0)"></stop>
+          <stop offset=".82" stop-color="rgba(30,26,24,0)"></stop>
+          <stop offset="1" stop-color="rgba(30,26,24,.14)"></stop>
+        </linearGradient>
+        <radialGradient id="sombra-hinchado" cx=".32" cy=".28" r="1">
+          <stop offset="0" stop-color="rgba(250,248,243,.36)"></stop>
+          <stop offset=".55" stop-color="rgba(250,248,243,.04)"></stop>
+          <stop offset="1" stop-color="rgba(30,26,24,.14)"></stop>
+        </radialGradient>
+        <filter id="difuminado"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter>
+      </defs>
+    </svg>
+    <slot />
+  </body>
+</html>
+

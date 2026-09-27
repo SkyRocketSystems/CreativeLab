@@ -1,0 +1,90 @@
+---
+const chips = ['Funcionalidad cotidiana', 'Diseño personalizado', 'Creación con propósito'];
+---
+
+<section class="seccion seccion-impacto" id="impacto" aria-label="Impacto">
+  <div class="contenedor">
+    <div class="impacto-contenido">
+      <p class="etiqueta-seccion">Impacto</p>
+      <h2>Diseño que también genera impacto</h2>
+      <p class="impacto-texto">
+        Creamos objetos funcionales y personalizados que combinan diseño, intención y valor para
+        quien los usa.
+      </p>
+      <ul class="impacto-chips">
+        {
+          chips.map((chip) => (
+            <li class="chip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true">
+                <path d="M5 12l5 5L20 7" />
+              </svg>
+              {chip}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .seccion-impacto {
+    background: var(--salvia);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .seccion-impacto::before,
+  .seccion-impacto::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(250, 248, 243, 0.35);
+    pointer-events: none;
+  }
+
+  .seccion-impacto::before {
+    width: 340px;
+    height: 340px;
+    top: -120px;
+    right: -80px;
+  }
+
+  .seccion-impacto::after {
+    width: 240px;
+    height: 240px;
+    bottom: -100px;
+    left: -60px;
+  }
+
+  .impacto-contenido {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+  }
+
+  .seccion-impacto .etiqueta-seccion {
+    color: rgba(30, 26, 24, 0.62);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .impacto-texto {
+    font-size: 17px;
+    color: rgba(30, 26, 24, 0.8);
+    margin-top: 16px;
+    max-width: 52ch;
+  }
+
+  .impacto-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+    padding: 0;
+  }
+
+  .impacto-chips .chip {
+    background: var(--crema);
+  }
+</style>

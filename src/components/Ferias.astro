@@ -1,0 +1,158 @@
+---
+const diasCalendario = [
+  '', '', '', '', '', '', '',
+  '', '', '', '', '', '', '',
+  '', '', '', '', '', '', '',
+  '', '', '', '', '', '', '',
+];
+---
+
+<section class="seccion seccion-ferias" id="ferias" aria-label="Personalización en ferias">
+  <div class="contenedor">
+    <div class="ferias-tarjeta">
+      <div class="ferias-info">
+        <p class="etiqueta-seccion">Ferias</p>
+        <h2>Crea tu producto en vivo</h2>
+        <p class="ferias-texto">
+          Encuéntranos en ferias y mercaditos locales para elegir colores, materiales y mensajes
+          junto a nuestro equipo.
+        </p>
+        <button class="btn btn-oscuro" id="btn-avisarme" type="button">Quiero enterarme</button>
+      </div>
+      <div class="ferias-agenda" aria-hidden="true">
+        <div class="agenda">
+          <div class="agenda-cabecera">
+            <span>Agenda CreativeLab</span>
+          </div>
+          <div class="agenda-cuerpo">
+            <div class="agenda-dias">
+              {
+                ['L', 'M', 'M', 'J', 'V', 'S', 'D'].map((d) => (
+                  <span class="agenda-dia-semana">{d}</span>
+                ))
+              }
+            </div>
+            <div class="agenda-malla">
+              {diasCalendario.map(() => <span class="agenda-celda"></span>)}
+            </div>
+          </div>
+          <span class="agenda-estado">Próximamente</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .seccion-ferias {
+    background: var(--crema);
+    /* Primera sección de la página: compensa el header fijo */
+    padding-top: calc(var(--header-h) + 24px);
+    padding-bottom: 48px;
+  }
+
+  @media (min-width: 1080px) {
+    .seccion-ferias {
+      padding-top: calc(var(--header-h) + 40px);
+      padding-bottom: 64px;
+    }
+  }
+
+  .ferias-tarjeta {
+    background: var(--beige);
+    border-radius: var(--radius-contenedor);
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: center;
+    box-shadow: var(--sombra-tarjeta);
+  }
+
+  @media (min-width: 768px) {
+    .ferias-tarjeta {
+      grid-template-columns: 1.4fr 1fr;
+      padding: 48px;
+    }
+  }
+
+  .ferias-info .etiqueta-seccion {
+    color: var(--taupe);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .ferias-texto {
+    color: rgba(30, 26, 24, 0.75);
+    font-size: 16px;
+    margin-top: 12px;
+    margin-bottom: 24px;
+    max-width: 44ch;
+  }
+
+  .ferias-agenda {
+    display: flex;
+    justify-content: center;
+  }
+
+  .agenda {
+    width: min(280px, 100%);
+    background: var(--crema);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--sombra-suave);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .agenda-cabecera {
+    background: var(--taupe);
+    color: var(--crema);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 16px;
+    letter-spacing: 0.04em;
+  }
+
+  .agenda-cuerpo {
+    padding: 14px;
+  }
+
+  .agenda-dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .agenda-dia-semana {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(30, 26, 24, 0.45);
+    text-align: center;
+  }
+
+  .agenda-malla {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .agenda-celda {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    background: var(--beige-suave);
+  }
+
+  .agenda-estado {
+    align-self: center;
+    margin: 0 14px 14px;
+    background: var(--terracota);
+    color: var(--crema);
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 8px 18px;
+    border-radius: var(--radius-pill);
+    text-align: center;
+  }
+</style>

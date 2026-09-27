@@ -1,0 +1,138 @@
+---
+const pasos = [
+  {
+    numero: '01',
+    titulo: 'Elige tu base',
+    texto: 'Tote bag, organizador o decorativo: tú decides qué crear.',
+    icono: 'M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3Z M12 12l8-4.5 M12 12v9 M12 12 4 7.5',
+  },
+  {
+    numero: '02',
+    titulo: 'Personaliza color y material',
+    texto: 'Seis colores y materiales pensados para el uso diario.',
+    icono: 'M12 4s6 6.2 6 10a6 6 0 0 1-12 0c0-3.8 6-10 6-10Z',
+  },
+  {
+    numero: '03',
+    titulo: 'Añade tu mensaje',
+    texto: 'Un nombre o una frase de hasta 25 caracteres.',
+    icono: 'M4 20l1-4L16 5l3 3L8 19l-4 1Z M13 8l3 3',
+  },
+  {
+    numero: '04',
+    titulo: 'Revisa y solicita tu diseño',
+    texto: 'Mira tu total estimado y pídelo por WhatsApp.',
+    icono: 'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11',
+  },
+];
+---
+
+<section class="seccion seccion-como" id="como-funciona" aria-label="Cómo funciona">
+  <div class="contenedor">
+    <p class="etiqueta-seccion">Cómo funciona</p>
+    <h2>Crear el tuyo es muy fácil</h2>
+    <div class="pasos">
+      {
+        pasos.map((paso) => (
+          <article class="paso">
+            <span class="paso-numero" aria-hidden="true">{paso.numero}</span>
+            <span class="paso-icono" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d={paso.icono} />
+              </svg>
+            </span>
+            <h3>{paso.titulo}</h3>
+            <p>{paso.texto}</p>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .seccion-como {
+    background: var(--crema);
+  }
+
+  .seccion-como .etiqueta-seccion {
+    color: var(--taupe);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .seccion-como h2 {
+    margin-bottom: 40px;
+  }
+
+  .pasos {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  @media (min-width: 768px) {
+    .pasos {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+  }
+
+  @media (min-width: 1080px) {
+    .pasos {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+  }
+
+  .paso {
+    position: relative;
+    background: var(--beige-suave);
+    border-radius: var(--radius-tarjeta);
+    padding: 24px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .paso-numero {
+    position: absolute;
+    top: -10px;
+    right: 8px;
+    font-size: 72px;
+    font-weight: 800;
+    color: rgba(30, 26, 24, 0.07);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .paso-icono {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--beige);
+    color: var(--carbon);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .paso-icono svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .paso h3 {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .paso p {
+    font-size: 14.5px;
+    color: rgba(30, 26, 24, 0.68);
+    line-height: 1.5;
+    max-width: 30ch;
+  }
+</style>

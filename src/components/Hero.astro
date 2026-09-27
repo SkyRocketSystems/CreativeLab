@@ -1,0 +1,704 @@
+---
+import ProductMockup from './ProductMockup.astro';
+import Configurator from './Configurator.astro';
+
+const beneficios = [
+  {
+    texto: 'Personalización a tu medida',
+    icono: 'M4 20l1-4L16 5l3 3L8 19l-4 1Z',
+  },
+  {
+    texto: 'Vista previa en tiempo real',
+    icono: 'M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z',
+  },
+  {
+    texto: 'Diseño funcional con propósito',
+    icono: 'M12 20s-7-4.3-7-9a4 4 0 0 1 7-2.5A4 4 0 0 1 19 11c0 4.7-7 9-7 9Z',
+  },
+];
+---
+
+<section class="seccion-hero" id="crear" aria-label="Crea el tuyo">
+  <div class="hero-canvas">
+    <div class="hero-bento">
+      <!-- A · Bloque de marca y conversión -->
+      <div class="bloque bloque-marca">
+        <span class="eyebrow-chip">Productos funcionales con impacto social</span>
+        <h1>Diseña algo que sea realmente tuyo</h1>
+        <p class="marca-texto">
+          Personaliza tote bags, organizadores y objetos decorativos con color, materiales y
+          mensajes que hablan de ti.
+        </p>
+        <a class="btn btn-primario marca-cta" href="#panel-configurador">Empezar a crear →</a>
+        <ul class="beneficios">
+          {
+            beneficios.map((b) => (
+              <li>
+                <span class="beneficio-icono" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d={b.icono} />
+                  </svg>
+                </span>
+                {b.texto}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- B + C · Preview dominante + panel flotante del configurador -->
+      <div class="bloque preview-wrap">
+        <div class="preview-tarjeta">
+          <div class="preview-overlay">
+            <p class="preview-titulo">Tu diseño. Nuestro propósito.</p>
+            <p class="preview-texto">Convierte una idea en un objeto único.</p>
+            <button class="preview-ampliar" id="btn-ampliar" type="button" aria-label="Ampliar vista del diseño">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="preview-producto">
+            <ProductMockup stateful={true} product="tote" color="#E6DEC9" etiqueta="Vista previa en tiempo real de tu diseño" />
+          </div>
+        </div>
+        <Configurator />
+      </div>
+
+      <!-- D · Bloque derecho superior: valor de marca -->
+      <div class="bloque bloque-valor">
+        <div class="bloque-cabecera">
+          <p class="valor-eyebrow">Diseño con propósito</p>
+          <span class="flecha-circulo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+              <path d="M7 17 17 7M8 7h9v9"></path>
+            </svg>
+          </span>
+        </div>
+        <p class="valor-sub">Crea. Personaliza. Comparte.</p>
+        <p class="valor-grande">100% tuyo</p>
+        <p class="valor-texto">Cada elección transforma un objeto cotidiano en algo único.</p>
+        <div class="valor-decor" aria-hidden="true">
+          <ProductMockup product="tote" color="#AD8470" material="lienzo" etiqueta="" />
+        </div>
+      </div>
+
+      <!-- E · Bloque derecho central: diseños recientes -->
+      <div class="bloque bloque-recientes">
+        <div class="bloque-cabecera">
+          <h3>Diseños recientes</h3>
+          <span class="flecha-circulo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+              <path d="M7 17 17 7M8 7h9v9"></path>
+            </svg>
+          </span>
+        </div>
+        <div class="presets">
+          <button class="preset" data-preset="toteNatural" data-nombre="Tote Natural" type="button">
+            <span class="preset-thumb"><ProductMockup product="tote" color="#E6DEC9" etiqueta="" /></span>
+            <span class="preset-nombre">Tote Natural</span>
+            <span class="preset-estado">Editado hoy</span>
+          </button>
+          <button class="preset" data-preset="organizadorTerracota" data-nombre="Organizador Terracota" type="button">
+            <span class="preset-thumb"><ProductMockup product="organizador" color="#C86B45" etiqueta="" /></span>
+            <span class="preset-nombre">Organizador Terracota</span>
+            <span class="preset-estado">Guardado ayer</span>
+          </button>
+          <button class="preset" data-preset="decorativoSalvia" data-nombre="Decorativo Salvia" type="button">
+            <span class="preset-thumb"><ProductMockup product="decorativo" color="#B8D3AE" material="premium" etiqueta="" /></span>
+            <span class="preset-nombre">Decorativo Salvia</span>
+            <span class="preset-estado">Editado hace 3 días</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- F · Bloque derecho inferior: resumen y precio -->
+      <div class="bloque bloque-resumen">
+        <div class="bloque-cabecera">
+          <h3>Resumen de tu diseño</h3>
+          <span class="flecha-circulo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="15" height="15">
+              <path d="M7 17 17 7M8 7h9v9"></path>
+            </svg>
+          </span>
+        </div>
+        <p class="progreso-indicador"><span id="progreso-contador">3 de 5</span> detalles listos</p>
+        <p class="progreso-ayuda">Completa producto, color, material, texto y extras.</p>
+        <div
+          class="barra"
+          id="barra-progreso-fondo"
+          role="progressbar"
+          aria-valuemin="0"
+          aria-valuemax="5"
+          aria-valuenow="3"
+          aria-label="Progreso de personalización"
+        >
+          <div class="barra-relleno" id="barra-progreso" style="width:60%"></div>
+        </div>
+        <div class="precio-bloque">
+          <span class="precio-etiqueta">Total estimado</span>
+          <span class="precio-valor" id="precio-hero">$40.000 COP</span>
+          <span class="precio-nota">El valor se actualiza mientras personalizas</span>
+        </div>
+        <a class="btn btn-borde btn-sm" href="#resumen">Ver detalle</a>
+      </div>
+
+      <!-- Mini tarjeta de catálogo (final de la columna editorial) -->
+      <div class="bloque mini-catalogo">
+        <span class="mini-imagen" aria-hidden="true">
+          <ProductMockup product="tote" color="#B8D3AE" material="lona" etiqueta="" />
+        </span>
+        <span class="mini-info">
+          <span class="mini-titulo">Diseño para tu historia</span>
+          <span class="mini-texto">Funcional. Personal. Con propósito.</span>
+          <a class="mini-enlace" href="#catalogo">Explorar catálogo →</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .seccion-hero {
+    background: var(--crema);
+    padding-top: 24px;
+    padding-bottom: 40px;
+  }
+
+  @media (min-width: 1080px) {
+    .seccion-hero {
+      padding-top: 48px;
+      padding-bottom: 64px;
+    }
+  }
+
+  .hero-canvas {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: 16px;
+  }
+
+  @media (min-width: 1080px) {
+    .hero-canvas {
+      padding-inline: 32px;
+    }
+  }
+
+  .hero-bento {
+    background: var(--crema);
+    border-radius: var(--radius-contenedor);
+    padding: 20px;
+    box-shadow: var(--sombra-media);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  @media (min-width: 1080px) {
+    .hero-bento {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(8, minmax(0, 1fr));
+      gap: 24px;
+      min-height: 760px;
+      padding: 40px;
+    }
+  }
+
+  /* ---------- A · Bloque de marca ---------- */
+  .bloque-marca {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    order: 1;
+  }
+
+  .eyebrow-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 14px;
+    border-radius: var(--radius-pill);
+    background: var(--beige);
+    color: var(--carbon);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  .marca-texto {
+    font-size: 16px;
+    color: rgba(30, 26, 24, 0.75);
+    max-width: 40ch;
+  }
+
+  .beneficios {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .beneficios li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(30, 26, 24, 0.8);
+  }
+
+  .beneficio-icono {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 50%;
+    background: var(--beige);
+    color: var(--carbon);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .beneficio-icono svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ---------- B + C · Preview + configurador ---------- */
+  .preview-wrap {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .preview-tarjeta {
+    position: relative;
+    background: linear-gradient(160deg, #f0eadb 0%, var(--beige) 100%);
+    border-radius: var(--radius-contenedor);
+    overflow: hidden;
+    min-height: 440px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .preview-overlay {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+    max-width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    text-align: right;
+  }
+
+  @media (min-width: 1080px) {
+    .preview-overlay {
+      max-width: 35%;
+      top: 24px;
+      right: 24px;
+    }
+  }
+
+  .preview-titulo {
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .preview-texto {
+    font-size: 13px;
+    color: rgba(30, 26, 24, 0.68);
+    line-height: 1.4;
+  }
+
+  .preview-ampliar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--crema);
+    border: 1px solid var(--beige-linea);
+    color: var(--carbon);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--sombra-tarjeta);
+    transition: transform 0.15s ease, background-color 0.15s ease;
+  }
+
+  .preview-ampliar:hover {
+    background: var(--beige);
+    transform: scale(1.06);
+  }
+
+  .preview-ampliar svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .preview-producto {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px 24px;
+  }
+
+  .preview-producto :global(.mockup) {
+    width: min(70%, 320px);
+  }
+
+  @media (min-width: 1080px) {
+    .preview-wrap {
+      position: relative;
+      display: block;
+    }
+
+    .preview-tarjeta {
+      height: 100%;
+      min-height: 0;
+    }
+
+    .preview-producto {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      padding: 88px 48px 248px;
+    }
+
+    .preview-producto :global(.mockup) {
+      width: min(72%, 400px);
+      max-height: 100%;
+    }
+
+    .preview-wrap :global(.panel-configuracion) {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      z-index: 3;
+      width: calc(100% - 40px);
+    }
+  }
+
+  /* ---------- D · Valor de marca ---------- */
+  .bloque-valor {
+    position: relative;
+    order: 5;
+    background: var(--beige-suave);
+    border-radius: var(--radius-tarjeta);
+    padding: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .bloque-cabecera {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .bloque-cabecera h3 {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .valor-eyebrow {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--taupe);
+  }
+
+  .valor-sub {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(30, 26, 24, 0.6);
+  }
+
+  .valor-grande {
+    font-size: clamp(30px, 4vw, 38px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--terracota);
+  }
+
+  .valor-texto {
+    font-size: 13.5px;
+    color: rgba(30, 26, 24, 0.7);
+    max-width: 26ch;
+  }
+
+  .valor-decor {
+    position: absolute;
+    right: -14%;
+    bottom: -12%;
+    width: 52%;
+    opacity: 0.95;
+    transform: rotate(10deg);
+    pointer-events: none;
+  }
+
+  /* ---------- E · Diseños recientes ---------- */
+  .bloque-recientes {
+    order: 4;
+    background: var(--crema);
+    border: 1px solid var(--beige-linea);
+    border-radius: var(--radius-tarjeta);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .presets {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    padding-bottom: 4px;
+  }
+
+  .preset {
+    flex: 1 0 30%;
+    min-width: 110px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    border-radius: 16px;
+    background: var(--beige-suave);
+    border: 1.5px solid transparent;
+    text-align: left;
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .preset:hover {
+    border-color: var(--terracota);
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-tarjeta);
+  }
+
+  .preset-thumb {
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--crema);
+  }
+
+  .preset-nombre {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .preset-estado {
+    font-size: 11.5px;
+    color: rgba(30, 26, 24, 0.55);
+  }
+
+  /* ---------- F · Resumen y precio ---------- */
+  .bloque-resumen {
+    order: 3;
+    background: var(--crema);
+    border: 1px solid var(--beige-linea);
+    border-radius: var(--radius-tarjeta);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .progreso-indicador {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .progreso-indicador span {
+    color: var(--terracota);
+    font-weight: 800;
+  }
+
+  .progreso-ayuda {
+    font-size: 12.5px;
+    color: rgba(30, 26, 24, 0.55);
+  }
+
+  .barra {
+    height: 8px;
+    border-radius: var(--radius-pill);
+    background: var(--beige);
+    overflow: hidden;
+    margin-block: 4px;
+  }
+
+  .barra-relleno {
+    height: 100%;
+    border-radius: var(--radius-pill);
+    background: var(--terracota);
+    transition: width 0.3s ease;
+  }
+
+  .precio-bloque {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-block: 6px;
+  }
+
+  .precio-etiqueta {
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(30, 26, 24, 0.55);
+  }
+
+  .precio-valor {
+    font-size: clamp(32px, 3vw, 40px);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--terracota);
+    line-height: 1.1;
+  }
+
+  .precio-nota {
+    font-size: 12px;
+    color: rgba(30, 26, 24, 0.55);
+  }
+
+  .bloque-resumen .btn {
+    align-self: flex-start;
+    margin-top: 6px;
+  }
+
+  /* ---------- Mini catálogo ---------- */
+  .mini-catalogo {
+    order: 6;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--beige);
+    border-radius: var(--radius-tarjeta);
+    padding: 14px;
+    max-width: 300px;
+  }
+
+  .mini-imagen {
+    width: 84px;
+    min-width: 84px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--crema);
+  }
+
+  .mini-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .mini-titulo {
+    font-size: 14.5px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .mini-texto {
+    font-size: 12.5px;
+    color: rgba(30, 26, 24, 0.62);
+  }
+
+  .mini-enlace {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--terracota);
+    margin-top: 4px;
+  }
+
+  .mini-enlace:hover {
+    text-decoration: underline;
+  }
+
+  /* ---------- Tablet: grid de 6 columnas ---------- */
+  @media (min-width: 768px) and (max-width: 1079px) {
+    .hero-bento {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 20px;
+    }
+
+    .bloque-marca {
+      grid-column: 1 / 7;
+    }
+
+    .preview-wrap {
+      grid-column: 1 / 5;
+    }
+
+    .bloque-resumen {
+      grid-column: 5 / 7;
+    }
+
+    .bloque-valor {
+      grid-column: 1 / 4;
+    }
+
+    .bloque-recientes {
+      grid-column: 4 / 7;
+    }
+
+    .mini-catalogo {
+      grid-column: 1 / 4;
+    }
+  }
+
+  /* ---------- Desktop: bento de 12 columnas ---------- */
+  @media (min-width: 1080px) {
+    .bloque-marca {
+      grid-column: 1 / 4;
+      grid-row: 1 / 7;
+    }
+
+    .preview-wrap {
+      grid-column: 4 / 9;
+      grid-row: 1 / 9;
+    }
+
+    .bloque-valor {
+      grid-column: 9 / 13;
+      grid-row: 1 / 3;
+    }
+
+    .bloque-recientes {
+      grid-column: 9 / 13;
+      grid-row: 3 / 6;
+    }
+
+    .bloque-resumen {
+      grid-column: 9 / 13;
+      grid-row: 6 / 9;
+    }
+
+    .mini-catalogo {
+      grid-column: 1 / 4;
+      grid-row: 7 / 9;
+      align-self: end;
+    }
+  }
+</style>
+
+
+

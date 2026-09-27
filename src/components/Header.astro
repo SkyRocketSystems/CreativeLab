@@ -1,0 +1,360 @@
+---
+/* Orden secuencial según el orden real de las secciones en la página:
+   Ferias (hero) → Crear → Cómo funciona → Catálogo → Impacto → Empresas */
+const enlaces = [
+  { href: '#ferias', id: 'ferias', texto: 'Ferias' },
+  { href: '#crear', id: 'crear', texto: 'Crear' },
+  { href: '#como-funciona', id: 'como-funciona', texto: 'Cómo funciona' },
+  { href: '#catalogo', id: 'catalogo', texto: 'Catálogo' },
+  { href: '#impacto', id: 'impacto', texto: 'Impacto' },
+  { href: '#empresas', id: 'empresas', texto: 'Empresas' },
+];
+---
+
+<header class="cabecera" id="cabecera">
+  <div class="cabecera-inner">
+    <a class="logo" href="#crear" aria-label="CreativeLab — ir al inicio">
+      <svg class="logo-marca" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="12" fill="#1E1A18"></rect>
+        <rect x="8" y="8" width="24" height="24" rx="8" fill="#E6DEC9"></rect>
+        <circle cx="17" cy="20" r="5.5" fill="#C86B45"></circle>
+        <rect x="24.5" y="14.5" width="5" height="11" rx="2.5" fill="#B8D3AE"></rect>
+      </svg>
+      <span class="logo-texto">Creative<span class="logo-acento">Lab</span></span>
+    </a>
+
+    <nav class="nav-principal" aria-label="Navegación principal">
+      <ul>
+        {
+          enlaces.map((enlace) => (
+            <li>
+              <a
+                class:list={['nav-link', { 'is-activa': enlace.id === 'ferias' }]}
+                data-nav={enlace.id}
+                href={enlace.href}
+                aria-current={enlace.id === 'ferias' ? 'true' : undefined}
+              >
+                {enlace.texto}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="cabecera-acciones">
+      <button class="icon-btn" id="btn-buscar" type="button" aria-label="Buscar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
+      </button>
+      <button class="icon-btn" id="btn-carrito" type="button" aria-label="Carrito, 0 productos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 8h12l-1.2 12H7.2L6 8Z"></path>
+          <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+        </svg>
+        <span class="badge" aria-hidden="true">0</span>
+      </button>
+      <a class="btn btn-oscuro cabecera-cta" href="#panel-configurador">Crear producto →</a>
+      <button
+        class="icon-btn btn-hamburguesa"
+        id="btn-menu"
+        type="button"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="menu-movil"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="menu-movil" id="menu-movil">
+  <div class="menu-fondo" data-cerrar-menu></div>
+  <nav class="menu-panel" aria-label="Menú móvil">
+    <div class="menu-cabecera">
+      <span class="logo-texto">Creative<span class="logo-acento">Lab</span></span>
+      <button class="icon-btn" data-cerrar-menu type="button" aria-label="Cerrar menú">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18"></path>
+        </svg>
+      </button>
+    </div>
+    <ul class="menu-lista">
+      {
+        enlaces.map((enlace) => (
+          <li>
+            <a href={enlace.href} data-cerrar-menu>
+              {enlace.texto}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="btn btn-oscuro menu-cta" href="#panel-configurador" data-cerrar-menu>Crear producto →</a>
+  </nav>
+</div>
+
+<style>
+  .cabecera {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 130;
+    height: var(--header-h);
+    transition: background-color 0.25s ease, box-shadow 0.25s ease, backdrop-filter 0.25s ease;
+  }
+
+  .cabecera.escrolada {
+    background: rgba(250, 248, 243, 0.86);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 var(--beige-linea);
+  }
+
+  .cabecera-inner {
+    max-width: 1280px;
+    height: 100%;
+    margin-inline: auto;
+    padding-inline: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  @media (min-width: 1080px) {
+    .cabecera-inner {
+      padding-inline: 32px;
+    }
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-marca {
+    width: 30px;
+    height: 30px;
+  }
+
+  .logo-texto {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .logo-acento {
+    color: var(--terracota);
+  }
+
+  /* Nav escritorio */
+  .nav-principal {
+    display: none;
+  }
+
+  @media (min-width: 1080px) {
+    .nav-principal {
+      display: block;
+    }
+
+    .nav-principal ul {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+  }
+
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 2px;
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(30, 26, 24, 0.72);
+    transition: color 0.15s ease;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 4px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--terracota);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.18s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--carbon);
+  }
+
+  .nav-link.is-activa {
+    color: var(--carbon);
+    font-weight: 600;
+  }
+
+  .nav-link.is-activa::after {
+    transform: scaleX(1);
+  }
+
+  /* Acciones */
+  .cabecera-acciones {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .icon-btn {
+    position: relative;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: var(--carbon);
+    transition: background-color 0.15s ease;
+  }
+
+  .icon-btn:hover {
+    background: rgba(230, 222, 201, 0.6);
+  }
+
+  .icon-btn svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  .badge {
+    position: absolute;
+    top: 4px;
+    right: 2px;
+    min-width: 17px;
+    height: 17px;
+    padding-inline: 4px;
+    border-radius: var(--radius-pill);
+    background: var(--terracota);
+    color: var(--crema);
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cabecera-cta {
+    display: none;
+  }
+
+  .btn-hamburguesa {
+    display: inline-flex;
+  }
+
+  @media (min-width: 1080px) {
+    .cabecera-cta {
+      display: inline-flex;
+    }
+
+    .btn-hamburguesa {
+      display: none;
+    }
+  }
+
+  /* Menú móvil */
+  .menu-movil {
+    position: fixed;
+    inset: 0;
+    z-index: 140;
+    visibility: hidden;
+  }
+
+  .menu-movil.es-abierto {
+    visibility: visible;
+  }
+
+  .menu-fondo {
+    position: absolute;
+    inset: 0;
+    background: rgba(30, 26, 24, 0.4);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .menu-movil.es-abierto .menu-fondo {
+    opacity: 1;
+  }
+
+  .menu-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(320px, 86vw);
+    background: var(--crema);
+    padding: 16px 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transform: translateX(100%);
+    transition: transform 0.28s ease;
+    box-shadow: var(--sombra-media);
+  }
+
+  .menu-movil.es-abierto .menu-panel {
+    transform: translateX(0);
+  }
+
+  .menu-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--beige-linea);
+  }
+
+  .menu-lista {
+    display: flex;
+    flex-direction: column;
+    padding-block: 8px;
+  }
+
+  .menu-lista a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 14px;
+  }
+
+  .menu-lista a:hover {
+    background: var(--beige-suave);
+  }
+
+  .menu-cta {
+    margin-top: auto;
+  }
+
+  @media (min-width: 1080px) {
+    .menu-movil {
+      display: none;
+    }
+  }
+</style>
+
+

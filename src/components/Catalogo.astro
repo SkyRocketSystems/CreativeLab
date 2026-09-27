@@ -1,0 +1,138 @@
+---
+import ProductMockup from './ProductMockup.astro';
+
+const productos = [
+  {
+    id: 'tote',
+    nombre: 'Tote bags',
+    claim: 'Para llevar tu historia todos los días',
+    precio: 40000,
+    color: '#E6DEC9',
+  },
+  {
+    id: 'organizador',
+    nombre: 'Organizadores',
+    claim: 'Orden con personalidad',
+    precio: 50000,
+    color: '#C86B45',
+  },
+  {
+    id: 'decorativo',
+    nombre: 'Decorativos',
+    claim: 'Detalles que transforman espacios',
+    precio: 60000,
+    color: '#B8D3AE',
+  },
+];
+---
+
+<section class="seccion seccion-catalogo" id="catalogo" aria-label="Catálogo de productos">
+  <div class="contenedor">
+    <p class="etiqueta-seccion">Catálogo</p>
+    <h2>Elige la base de tu idea</h2>
+    <div class="catalogo-grid">
+      {
+        productos.map((p) => (
+          <article class="producto-card">
+            <div class="producto-imagen">
+              <ProductMockup product={p.id} color={p.color} etiqueta="" />
+            </div>
+            <div class="producto-info">
+              <h3>{p.nombre}</h3>
+              <p>{p.claim}</p>
+              <p class="producto-precio">Desde ${p.precio.toLocaleString('es-CO')} COP</p>
+              <button
+                class="btn btn-oscuro"
+                data-personalizar={p.id}
+                type="button"
+              >
+                Personalizar
+              </button>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .seccion-catalogo {
+    background: var(--beige);
+  }
+
+  .seccion-catalogo .etiqueta-seccion {
+    color: var(--taupe);
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .seccion-catalogo h2 {
+    margin-bottom: 40px;
+  }
+
+  .catalogo-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  @media (min-width: 768px) {
+    .catalogo-grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+  }
+
+  .producto-card {
+    background: var(--crema);
+    border-radius: var(--radius-tarjeta);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: var(--sombra-tarjeta);
+  }
+
+  .producto-imagen {
+    background: linear-gradient(160deg, #f0eadb 0%, var(--beige) 100%);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .producto-imagen :global(.mockup) {
+    width: min(70%, 220px);
+    pointer-events: none;
+  }
+
+  .producto-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .producto-info h3 {
+    font-size: 19px;
+    font-weight: 700;
+  }
+
+  .producto-info p {
+    font-size: 14.5px;
+    color: rgba(30, 26, 24, 0.68);
+  }
+
+  .producto-precio {
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    color: var(--terracota) !important;
+    margin-top: 4px;
+  }
+
+  .producto-info .btn {
+    margin-top: auto;
+    align-self: flex-start;
+  }
+</style>

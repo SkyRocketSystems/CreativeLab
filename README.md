@@ -27,7 +27,12 @@ Landing page única con configurador visual en tiempo real para tote bags, organ
   (formato internacional sin `+`, ej. `573001234567`). Mientras esté vacío, el botón opera en
   modo demo: copia el mensaje al portapapeles y muestra un toast.
 - **Precios y presets**: constantes `PRECIOS` y `PRESETS` en el mismo archivo.
-- **Paleta y tipografía**: variables en `src/styles/global.css` (Manrope, Caveat, Playfair Display).
+- **Sistema de diseño unificado**: variables en `src/styles/global.css`, compartidas por ambas
+  páginas (`/` y `/caja-creativelab`). Paleta estricta (crema, beige, taupe, terracota, salvia,
+  carbón), tipografía Fraunces (display, con tamaño óptico) + pila del sistema (UI), Caveat y
+  Playfair Display como tipografías de producto del configurador, materiales translúcidos y
+  tokens de movimiento (`--mov-*`, curvas decel/acel). Ver
+  `openspec/changes/refactor-unified-visual-identity/` para las decisiones de diseño.
 
 ## 🚀 Despliegue en Hostinger
 

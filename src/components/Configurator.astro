@@ -311,7 +311,14 @@ const extras = [
     font-weight: 600;
     color: rgba(30, 26, 24, 0.66);
     white-space: nowrap;
-    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    transition: background-color var(--mov-150) var(--curva-deceleracion),
+      color var(--mov-150) var(--curva-deceleracion),
+      border-color var(--mov-150) var(--curva-deceleracion),
+      transform var(--mov-100) var(--curva-deceleracion);
+  }
+
+  .tab:active {
+    transform: scale(0.97);
   }
 
   .tab svg {
@@ -360,7 +367,12 @@ const extras = [
     border: 1.5px solid transparent;
     background: var(--crema);
     text-align: left;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color var(--mov-150) var(--curva-deceleracion),
+      box-shadow var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .opcion-producto:active {
+    transform: scale(0.98);
   }
 
   .opcion-producto:hover {
@@ -435,7 +447,7 @@ const extras = [
     min-width: 68px;
     padding: 6px 4px;
     border-radius: 14px;
-    transition: background-color 0.15s ease;
+    transition: background-color var(--mov-150) var(--curva-deceleracion);
   }
 
   .muestra:hover {
@@ -453,7 +465,13 @@ const extras = [
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    transition: box-shadow var(--mov-150) var(--curva-deceleracion),
+      border-color var(--mov-150) var(--curva-deceleracion),
+      transform var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .muestra-chip:active {
+    transform: scale(0.94);
   }
 
   .muestra.is-selected .muestra-chip {
@@ -514,7 +532,12 @@ const extras = [
     background: var(--crema);
     text-align: left;
     min-height: 88px;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color var(--mov-150) var(--curva-deceleracion),
+      box-shadow var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .opcion-material:active {
+    transform: scale(0.98);
   }
 
   .opcion-material:hover {
@@ -655,7 +678,12 @@ const extras = [
     font-size: 13px;
     font-weight: 600;
     color: rgba(30, 26, 24, 0.65);
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition: background-color var(--mov-150) var(--curva-deceleracion),
+      color var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .segmento-grupo button:active {
+    transform: scale(0.97);
   }
 
   .segmento-grupo button:hover {
@@ -703,7 +731,11 @@ const extras = [
     border: 1.5px solid transparent;
     background: var(--crema);
     cursor: pointer;
-    transition: border-color 0.15s ease;
+    transition: border-color var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .extra:active {
+    transform: scale(0.99);
   }
 
   .extra:hover {
@@ -725,7 +757,8 @@ const extras = [
     background: var(--beige);
     border: 1px solid var(--beige-linea);
     position: relative;
-    transition: background-color 0.18s ease, border-color 0.18s ease;
+    transition: background-color var(--mov-150) var(--curva-deceleracion),
+      border-color var(--mov-150) var(--curva-deceleracion);
   }
 
   .extra .interruptor-pulgar {
@@ -737,7 +770,7 @@ const extras = [
     border-radius: 50%;
     background: var(--crema);
     box-shadow: 0 2px 5px rgba(30, 26, 24, 0.25);
-    transition: transform 0.18s ease;
+    transition: transform var(--mov-150) var(--curva-deceleracion);
   }
 
   .extra input:checked + .interruptor {

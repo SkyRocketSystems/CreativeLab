@@ -330,12 +330,17 @@ const beneficios = [
     align-items: center;
     justify-content: center;
     box-shadow: var(--sombra-tarjeta);
-    transition: transform 0.15s ease, background-color 0.15s ease;
+    transition: transform var(--mov-100) var(--curva-deceleracion),
+      background-color var(--mov-150) var(--curva-deceleracion);
   }
 
   .preview-ampliar:hover {
     background: var(--beige);
     transform: scale(1.06);
+  }
+
+  .preview-ampliar:active {
+    transform: scale(0.94);
   }
 
   .preview-ampliar svg {
@@ -482,13 +487,19 @@ const beneficios = [
     background: var(--beige-suave);
     border: 1.5px solid transparent;
     text-align: left;
-    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color var(--mov-150) var(--curva-deceleracion),
+      transform var(--mov-150) var(--curva-deceleracion),
+      box-shadow var(--mov-150) var(--curva-deceleracion);
   }
 
   .preset:hover {
     border-color: var(--terracota);
     transform: translateY(-2px);
     box-shadow: var(--sombra-tarjeta);
+  }
+
+  .preset:active {
+    transform: translateY(0) scale(0.98);
   }
 
   .preset-thumb {
@@ -548,7 +559,7 @@ const beneficios = [
     height: 100%;
     border-radius: var(--radius-pill);
     background: var(--terracota);
-    transition: width 0.3s ease;
+    transition: width var(--mov-300) var(--curva-deceleracion);
   }
 
   .precio-bloque {

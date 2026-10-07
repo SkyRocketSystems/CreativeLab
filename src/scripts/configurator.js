@@ -447,6 +447,7 @@ function abrirModal() {
   if (!modal) return;
   ultimoFoco = document.activeElement;
   modal.hidden = false;
+  modal.classList.remove('es-cerrando');
   modal.classList.add('es-abierto');
   document.body.style.overflow = 'hidden';
   $('#modal-cerrar')?.focus();
@@ -454,11 +455,25 @@ function abrirModal() {
 
 function cerrarModal() {
   const modal = $('#modal-vista');
-  if (!modal || !modal.classList.contains('es-abierto')) return;
+  if (!modal || modal.hidden || !modal.classList.contains('es-abierto')) return;
+  const panel = $('.modal-caja', modal);
+  let cierreTerminado = false;
+  const terminarCierre = () => {
+    if (cierreTerminado) return;
+    cierreTerminado = true;
+    panel?.removeEventListener('transitionend', terminarCierre);
+    modal.classList.remove('es-cerrando');
+    modal.hidden = true;
+    document.body.style.overflow = '';
+    ultimoFoco?.focus?.();
+  };
   modal.classList.remove('es-abierto');
-  modal.hidden = true;
+  modal.classList.add('es-cerrando');
   document.body.style.overflow = '';
-  ultimoFoco?.focus?.();
+  // Simetría: la salida debe verse completa antes de ocultar el diálogo
+  // (esperamos la transición, con tope de seguridad por si no dispara).
+  panel?.addEventListener('transitionend', terminarCierre);
+  setTimeout(terminarCierre, 450);
 }
 
 function inicializarModal() {

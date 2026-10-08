@@ -199,6 +199,8 @@ function renderizarPrecio() {
   });
   const barraPrecio = $('#barra-precio');
   if (barraPrecio) barraPrecio.textContent = `${formatoCOP(t.total)} COP`;
+  const precioInmersivo = $('#precio-inmersivo');
+  if (precioInmersivo) precioInmersivo.textContent = `${formatoCOP(t.total)} COP`;
 
   const dBase = $('#d-base-val');
   if (dBase) dBase.textContent = formatoCOP(t.base);
@@ -341,6 +343,8 @@ function activarTab(nombre) {
   $$('.panel-cuerpo .tab-panel').forEach((panel) => {
     panel.hidden = panel.id !== `panel-${nombre}`;
   });
+  /* El tab de texto muestra la tarjeta de regalo en el lugar del producto */
+  $('.preview-producto')?.setAttribute('data-vista', nombre === 'texto' ? 'tarjeta' : 'producto');
 }
 
 function inicializarTabs() {
@@ -468,24 +472,28 @@ function inicializarConfigurador() {
     btn.addEventListener('click', () => {
       estado.producto = btn.dataset.elegirProducto;
       render();
+      entrarPersonalizacion(btn);
     });
   });
   $$('[data-elegir-color]').forEach((btn) => {
     btn.addEventListener('click', () => {
       estado.color = btn.dataset.elegirColor;
       render();
+      entrarPersonalizacion(btn);
     });
   });
   $$('[data-elegir-material]').forEach((btn) => {
     btn.addEventListener('click', () => {
       estado.material = btn.dataset.elegirMaterial;
       render();
+      entrarPersonalizacion(btn);
     });
   });
   $$('[data-elegir-fuente]').forEach((btn) => {
     btn.addEventListener('click', () => {
       estado.fuente = btn.dataset.elegirFuente;
       render();
+      entrarPersonalizacion(btn);
     });
   });
 
@@ -501,6 +509,7 @@ function inicializarConfigurador() {
     input.addEventListener('change', () => {
       estado.extras[input.dataset.extra] = input.checked;
       render();
+      entrarPersonalizacion(input);
     });
   });
 
@@ -511,6 +520,7 @@ function inicializarConfigurador() {
       if (!preset) return;
       estado = structuredClone(preset);
       render();
+      entrarPersonalizacion(btn);
       mostrarToast(`Diseño cargado: ${btn.dataset.nombre ?? 'ejemplo'}`);
       if (window.innerWidth < 1080) {
         $('#panel-configurador')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -526,6 +536,23 @@ function inicializarConfigurador() {
       $('#crear').scrollIntoView({ behavior: 'smooth' });
       mostrarToast(`${NOMBRES.productos[estado.producto]} listo para personalizar`);
     });
+  });
+
+  /* Salida del modo inmersivo de personalización */
+  $('#btn-terminar')?.addEventListener('click', salirPersonalizacion);
+
+  /* "Empezar a crear" despliega el editor inmersivo directamente
+     (se cancela el salto de ancla: el panel ya queda dentro del overlay) */
+  $('.marca-cta')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    entrarPersonalizacion(e.currentTarget);
+  });
+
+  /* Un toque en cualquier parte del preview del producto también despliega
+     el editor (excepto el botón de ampliar, que conserva su modal propio) */
+  $('.preview-tarjeta')?.addEventListener('click', (e) => {
+    if (e.target.closest('#btn-ampliar')) return;
+    entrarPersonalizacion();
   });
 }
 
@@ -567,9 +594,66 @@ function cerrarModal() {
 }
 
 function inicializarModal() {
-  $('#btn-ampliar')?.addEventListener('click', abrirModal);
+  $('#btn-ampliar')?.addEventListener('click', () => abrirModal());
   $('#modal-cerrar')?.addEventListener('click', cerrarModal);
   $('.modal-fondo')?.addEventListener('click', cerrarModal);
+}
+
+/* ---------- Modo inmersivo de personalización ----------
+   Al elegir la primera opción, body.personalizando despliega el preview
+   (clip-path animado en Hero.astro) hasta ocupar todo el viewport con las
+   opciones a lo ancho. "Terminar" o Esc reproducen la animación inversa y
+   devuelven el bento grid a su estado inicial. */
+let personalizando = false;
+let disparadorPersonalizacion = null;
+let salidaInmersivaTimer = null;
+
+function entrarPersonalizacion(origen) {
+  if (personalizando) return;
+  const wrap = $('.preview-wrap');
+  if (!wrap) return;
+  personalizando = true;
+  disparadorPersonalizacion = origen ?? null;
+  /* Rect del preview en coordenadas del viewport: punto de partida del
+     despliegue (medido antes de que el overlay entre en fixed). */
+  const tarjeta = $('.preview-tarjeta');
+  const r = (tarjeta ?? wrap).getBoundingClientRect();
+  wrap.style.setProperty('--desde-izq', `${Math.max(0, r.left)}px`);
+  wrap.style.setProperty('--desde-arr', `${Math.max(0, r.top)}px`);
+  wrap.style.setProperty('--desde-der', `${Math.max(0, window.innerWidth - r.right)}px`);
+  wrap.style.setProperty('--desde-abj', `${Math.max(0, window.innerHeight - r.bottom)}px`);
+  document.body.classList.add('personalizando');
+}
+
+function salirPersonalizacion() {
+  if (!personalizando) return;
+  const wrap = $('.preview-wrap');
+  if (!wrap) {
+    document.body.classList.remove('personalizando');
+    personalizando = false;
+    return;
+  }
+  wrap.classList.remove('es-saliendo');
+  /* Reflow para que la animación de salida corra aunque la de entrada
+     haya terminado en el mismo frame. */
+  void wrap.offsetWidth;
+  wrap.classList.add('es-saliendo');
+  const terminar = (e) => {
+    if (e && e.animationName !== 'plegar-inmersivo') return;
+    wrap.removeEventListener('animationend', terminar);
+    clearTimeout(salidaInmersivaTimer);
+    wrap.classList.remove('es-saliendo');
+    ['--desde-izq', '--desde-arr', '--desde-der', '--desde-abj'].forEach((v) =>
+      wrap.style.removeProperty(v)
+    );
+    document.body.classList.remove('personalizando');
+    personalizando = false;
+    disparadorPersonalizacion?.focus?.();
+    disparadorPersonalizacion = null;
+  };
+  wrap.addEventListener('animationend', terminar);
+  /* Tope de seguridad por si animationend no dispara (400ms + margen). */
+  salidaInmersivaTimer = setTimeout(() => terminar(), 600);
 }
 
 /* ---------- Header: scroll y menú móvil ---------- */
@@ -605,6 +689,7 @@ function inicializarHeader() {
     if (e.key === 'Escape') {
       cerrarModal();
       cerrarMenu();
+      salirPersonalizacion();
     }
   });
 
@@ -643,13 +728,15 @@ function inicializarBarraSticky() {
   let panelVisible = false;
   let resumenVisible = false;
   const actualizar = () => barra.classList.toggle('es-visible', panelVisible && !resumenVisible);
+  /* El panel de opciones vive oculto en el bento (solo se despliega en el
+     editor inmersivo), así que la barra se ancla a la zona de creación */
   new IntersectionObserver(
     ([entrada]) => {
       panelVisible = entrada.isIntersecting;
       actualizar();
     },
     { threshold: 0.1 }
-  ).observe($('#panel-configurador'));
+  ).observe($('#crear'));
   new IntersectionObserver(
     ([entrada]) => {
       resumenVisible = entrada.isIntersecting;

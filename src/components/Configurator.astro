@@ -1,6 +1,5 @@
 ---
 import ProductMockup from './ProductMockup.astro';
-import TarjetaRegalo from './TarjetaRegalo.astro';
 
 const productos = [
   { id: 'tote', nombre: 'Tote bag', precio: 40000 },
@@ -203,8 +202,6 @@ const extras = [
     <!-- TAB: TEXTO (tarjeta de regalo) -->
     <div class="tab-panel" id="panel-texto" role="tabpanel" aria-labelledby="tab-texto" hidden>
       <p class="panel-titulo">Tu tarjeta de regalo</p>
-
-      <TarjetaRegalo stateful={true} />
 
       <div class="tarjeta-campos">
         <div class="campo-tarjeta">

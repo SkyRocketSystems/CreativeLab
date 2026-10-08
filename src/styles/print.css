@@ -89,6 +89,7 @@
   }
 
   .preview-wrap .panel-configuracion {
+    display: block !important;
     position: static !important;
     width: 100% !important;
     margin-top: 16px;

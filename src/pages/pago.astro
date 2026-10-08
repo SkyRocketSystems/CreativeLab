@@ -92,6 +92,20 @@ const bancos = [
           <p class="campo-error">Escribe tu ciudad</p>
         </div>
       </div>
+
+      <!-- Regalo directo: checkbox accesible con caja personalizada -->
+      <label class="pago-regalo" for="f-regalo">
+        <input type="checkbox" id="f-regalo" name="regalo" />
+        <span class="pago-regalo-caja" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m5 13 4 4L19 7"></path>
+          </svg>
+        </span>
+        <span class="pago-regalo-texto">
+          <strong>Enviar como Regalo Directo</strong>
+          <small>Lo envolvemos para regalo y llega directo a quien lo recibe, sin precios ni factura en el paquete.</small>
+        </span>
+      </label>
     </section>
 
       <!-- Paso 2 · Método de pago -->
@@ -448,6 +462,97 @@ const bancos = [
   .pago-seccion h2 {
     font: 600 21px var(--fuente-display);
     margin: 0 0 18px;
+  }
+
+  /* Checkbox "Enviar como Regalo Directo": input visualmente oculto,
+     caja personalizada terracota y tarjeta táctil completa (sistema iOS). */
+  .pago-regalo {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 18px;
+    padding: 14px;
+    background: var(--crema);
+    border: 1px solid var(--beige-linea);
+    border-radius: 16px;
+    cursor: pointer;
+    transition: border-color var(--mov-150) var(--curva-deceleracion),
+      background-color var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .pago-regalo input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+
+  .pago-regalo-caja {
+    flex: none;
+    width: 22px;
+    height: 22px;
+    margin-top: 2px;
+    border-radius: 7px;
+    border: 1.5px solid rgba(30, 26, 24, 0.35);
+    background: var(--crema);
+    display: grid;
+    place-items: center;
+    color: var(--crema);
+    transition: background-color var(--mov-150) var(--curva-deceleracion),
+      border-color var(--mov-150) var(--curva-deceleracion),
+      transform var(--mov-100) var(--curva-deceleracion);
+  }
+
+  .pago-regalo-caja svg {
+    width: 13px;
+    height: 13px;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity var(--mov-150) var(--curva-deceleracion),
+      transform var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .pago-regalo input:checked ~ .pago-regalo-caja {
+    background: var(--terracota);
+    border-color: var(--terracota);
+  }
+
+  .pago-regalo input:checked ~ .pago-regalo-caja svg {
+    opacity: 1;
+    transform: none;
+  }
+
+  .pago-regalo input:focus-visible ~ .pago-regalo-caja {
+    outline: 2px solid var(--terracota);
+    outline-offset: 2px;
+  }
+
+  .pago-regalo:active .pago-regalo-caja {
+    transform: scale(0.94);
+  }
+
+  .pago-regalo-texto {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .pago-regalo-texto strong {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .pago-regalo-texto small {
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: rgba(30, 26, 24, 0.6);
+  }
+
+  @media (hover: hover) {
+    .pago-regalo:hover {
+      border-color: var(--terracota);
+    }
   }
 
   /* Barra de pasos tipo segmentos */
@@ -902,9 +1007,10 @@ const bancos = [
       $('#pago-procesando').hidden = true;
       $('#pago-exito').hidden = false;
       $('#pago-orden').textContent = orden;
+      const regaloDirecto = $('#f-regalo')?.checked ? ' · Enviado como regalo directo' : '';
       $('#pago-detalle').textContent =
         `${articulos} ${articulos === 1 ? 'artículo' : 'artículos'} · ` +
-        `${NOMBRE_METODO[metodo]} · Total ${formatoCOP(totalPedido)} COP`;
+        `${NOMBRE_METODO[metodo]} · Total ${formatoCOP(totalPedido)} COP${regaloDirecto}`;
       /* El resumen visible conserva lo comprado; solo el carrito pagado se vacía */
       if (window.Carrito?.[AMBITO]) window.Carrito[AMBITO].vaciar();
       else localStorage.removeItem(CLAVE_POR_AMBITO[AMBITO]);

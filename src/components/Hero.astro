@@ -1,5 +1,6 @@
 ---
 import ProductMockup from './ProductMockup.astro';
+import TarjetaRegalo from './TarjetaRegalo.astro';
 import Configurator from './Configurator.astro';
 
 const beneficios = [
@@ -48,6 +49,13 @@ const beneficios = [
 
       <!-- B + C · Preview dominante + panel flotante del configurador -->
       <div class="bloque preview-wrap">
+        <!-- Barra del modo inmersivo (body.personalizando): título, total en
+             vivo y salida. Oculta en el bento normal. -->
+        <div class="inmersivo-barra">
+          <p class="inmersivo-titulo">Personalizando tu diseño</p>
+          <span class="inmersivo-precio" id="precio-inmersivo" aria-live="polite"></span>
+          <button class="btn btn-primario inmersivo-terminar" id="btn-terminar" type="button">✓ Terminar</button>
+        </div>
         <div class="preview-tarjeta">
           <div class="preview-overlay">
             <p class="preview-titulo">Tu diseño. Nuestro propósito.</p>
@@ -58,8 +66,11 @@ const beneficios = [
               </svg>
             </button>
           </div>
-          <div class="preview-producto">
+          <div class="preview-producto" data-vista="producto">
             <ProductMockup stateful={true} product="tote" color="#E6DEC9" etiqueta="Vista previa en tiempo real de tu diseño" />
+            <!-- Con el tab de texto activo, la tarjeta de regalo ocupa el
+                 lugar del producto (solo dentro del editor inmersivo) -->
+            <TarjetaRegalo stateful={true} />
           </div>
         </div>
         <Configurator />
@@ -141,18 +152,6 @@ const beneficios = [
           <span class="precio-nota">El valor se actualiza mientras personalizas</span>
         </div>
         <a class="btn btn-borde btn-sm" href="#resumen">Ver detalle</a>
-      </div>
-
-      <!-- Mini tarjeta de catálogo (final de la columna editorial) -->
-      <div class="bloque mini-catalogo">
-        <span class="mini-imagen" aria-hidden="true">
-          <ProductMockup product="tote" color="#B8D3AE" material="lona" etiqueta="" />
-        </span>
-        <span class="mini-info">
-          <span class="mini-titulo">Diseño para tu historia</span>
-          <span class="mini-texto">Funcional. Personal. Con propósito.</span>
-          <a class="mini-enlace" href="#catalogo">Explorar catálogo →</a>
-        </span>
       </div>
     </div>
   </div>
@@ -284,6 +283,8 @@ const beneficios = [
     display: flex;
     align-items: center;
     justify-content: center;
+    /* El preview invita a tocarlo: despliega el editor inmersivo */
+    cursor: pointer;
   }
 
   .preview-overlay {
@@ -361,6 +362,54 @@ const beneficios = [
     width: min(70%, 320px);
   }
 
+  /* Con el tab de texto activo dentro del editor, la tarjeta de regalo
+     ocupa el lugar del producto LLENANDO el área: columna flexible cuyo
+     cuerpo crece y la zona del mensaje absorbe el alto sobrante (como una
+     tarjeta de verdad). Solo dentro del editor; el bento muestra el
+     producto. */
+  .preview-producto :global(.tarjeta-regalo) {
+    display: none;
+  }
+
+  :global(body.personalizando) .preview-producto[data-vista='tarjeta'] :global(.tarjeta-regalo) {
+    display: flex;
+    flex-direction: column;
+    width: min(88%, 440px);
+    max-width: min(88%, 440px);
+    height: 100%;
+    max-height: 100%;
+    animation: asomar-tarjeta var(--mov-300) var(--curva-deceleracion) both;
+  }
+
+  :global(body.personalizando) .preview-producto[data-vista='tarjeta'] :global(.tr-cuerpo) {
+    flex: 1;
+  }
+
+  :global(body.personalizando) .preview-producto[data-vista='tarjeta'] :global(.tr-mensaje) {
+    flex: 1;
+  }
+
+  :global(body.personalizando) .preview-producto[data-vista='tarjeta'] :global(.mockup) {
+    display: none;
+  }
+
+  @keyframes asomar-tarjeta {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* El panel de opciones vive oculto en el bento: solo se muestra dentro
+     del editor inmersivo (ver bloque del modo inmersivo abajo). */
+  .preview-wrap :global(.panel-configuracion) {
+    display: none;
+  }
+
   @media (min-width: 1080px) {
     .preview-wrap {
       position: relative;
@@ -376,21 +425,131 @@ const beneficios = [
       position: absolute;
       inset: 0;
       z-index: 1;
-      padding: 88px 48px 248px;
+      padding: 64px 48px;
     }
 
     .preview-producto :global(.mockup) {
       width: min(72%, 400px);
       max-height: 100%;
     }
+  }
 
-    .preview-wrap :global(.panel-configuracion) {
-      position: absolute;
-      left: 20px;
-      right: 20px;
-      bottom: 20px;
-      z-index: 3;
-      width: calc(100% - 40px);
+  /* ---------- Modo inmersivo de personalización ----------
+     Lo activa configurator.js con body.personalizando al elegir la primera
+     opción: el preview se despliega (clip-path animado) desde su posición
+     en el bento hasta ocupar el viewport, con el panel de opciones a lo
+     ancho. El overlay es opaco: el resto informativo queda detrás; solo se
+     retiran las capas flotantes que quedarían encima. */
+  .inmersivo-barra {
+    display: none;
+  }
+
+  :global(body.personalizando) {
+    overflow: hidden;
+  }
+
+  :global(body.personalizando #cabecera),
+  :global(body.personalizando #barra-movil),
+  :global(body.personalizando #promo-caja) {
+    display: none;
+  }
+
+  :global(body.personalizando) .preview-wrap {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: max(16px, env(safe-area-inset-top)) 16px
+      max(16px, env(safe-area-inset-bottom));
+    background: var(--crema);
+    overflow: auto;
+    overscroll-behavior: contain;
+    animation: desplegar-inmersivo var(--mov-400) var(--curva-deceleracion)
+      both;
+  }
+
+  :global(body.personalizando) .inmersivo-barra {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .inmersivo-titulo {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .inmersivo-precio {
+    margin-left: auto;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--terracota);
+    white-space: nowrap;
+  }
+
+  .inmersivo-barra .btn {
+    padding: 8px 18px;
+    min-height: 40px;
+    white-space: nowrap;
+  }
+
+  /* Preview a todo el alto disponible; el panel pasa de flotante a estático
+     y ocupa todo el ancho (sus container queries re-miden solos). */
+  :global(body.personalizando) .preview-tarjeta {
+    flex: 1;
+    min-height: min(52vh, 680px);
+  }
+
+  :global(body.personalizando) .preview-producto {
+    position: static;
+    inset: auto;
+    height: 100%;
+    padding: 64px 24px 24px;
+  }
+
+  :global(body.personalizando) .preview-producto :global(.mockup) {
+    width: min(70%, 440px);
+    max-height: 100%;
+  }
+
+  :global(body.personalizando) .preview-wrap :global(.panel-configuracion) {
+    display: block;
+    position: static;
+    z-index: auto;
+    width: 100%;
+  }
+
+  /* Despliegue desde donde se ve el producto: configurator.js mide el rect
+     de la tarjeta y lo deja en --desde-*; la salida (es-saliendo) reproduce
+     la trayectoria inversa antes de devolver el bento a su estado. */
+  @keyframes desplegar-inmersivo {
+    from {
+      clip-path: inset(
+        var(--desde-arr) var(--desde-der) var(--desde-abj) var(--desde-izq)
+          round var(--radius-contenedor)
+      );
+    }
+    to {
+      clip-path: inset(0 round 0);
+    }
+  }
+
+  :global(body.personalizando) .preview-wrap.es-saliendo {
+    animation: plegar-inmersivo var(--mov-400) var(--curva-aceleracion) both;
+  }
+
+  @keyframes plegar-inmersivo {
+    from {
+      clip-path: inset(0 round 0);
+    }
+    to {
+      clip-path: inset(
+        var(--desde-arr) var(--desde-der) var(--desde-abj) var(--desde-izq)
+          round var(--radius-contenedor)
+      );
     }
   }
 

@@ -33,6 +33,12 @@ Landing page única con configurador visual en tiempo real para tote bags, organ
   Playfair Display como tipografías de producto del configurador, materiales translúcidos y
   tokens de movimiento (`--mov-*`, curvas decel/acel). Ver
   `openspec/changes/refactor-unified-visual-identity/` para las decisiones de diseño.
+- **Controles estilo Apple (Safari)**: pestañas y segmentos como control segmentado iOS
+  (segmento activo crema con texto carbón), interruptores tipo UISwitch, lista de extras como
+  lista agrupada inset, botones sin halo de color ni elevación al hover, hovers protegidos con
+  `(hover: hover)` y scrollbars tipo overlay. El sitio es instalable: en Safari, «Añadir a la
+  pantalla de inicio» abre la app a pantalla completa. Ver
+  `openspec/changes/refactor-apple-native-chrome/`.
 
 ## 🚀 Despliegue en Hostinger
 

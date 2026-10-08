@@ -5,6 +5,13 @@ interface Props {
   material?: 'lona' | 'lienzo' | 'impermeable' | 'premium';
   stateful?: boolean;
   etiqueta?: string;
+  /* Foto real del tote bag (public/Totebags). Solo el tote tiene
+     fotografías: fija la imagen en instancias estáticas; el configurador
+     la controla reactivamente en las instancias stateful vía data-foto. */
+  foto?: 'beige' | 'green' | 'personalizado' | null;
+  /* 'final' marca el mockup del Resumen: con tote muestra la foto
+     personalizada en lugar de la del color elegido. */
+  modo?: 'final' | null;
 }
 
 const {
@@ -13,6 +20,8 @@ const {
   material = 'lona',
   stateful = false,
   etiqueta = 'Vista previa del producto',
+  foto = null,
+  modo = null,
 } = Astro.props;
 ---
 
@@ -22,9 +31,8 @@ const {
   data-material={material}
   data-pocket="off"
   data-label="off"
-  data-pos="centro"
-  data-fuente="moderna"
-  data-colortexto="carbon"
+  data-foto={foto ?? undefined}
+  data-modo={modo ?? undefined}
   style={`--fabric:${color}`}
   role="img"
   aria-label={etiqueta}
@@ -251,7 +259,11 @@ const {
         </g>
       </g>
     </svg>
-    <div class="mockup-phrase" aria-hidden="true"></div>
+    <div class="mockup-fotos" aria-hidden="true">
+      <img class="foto foto-beige" src="/Totebags/tote-beige.png" alt="" draggable="false" decoding="async" />
+      <img class="foto foto-green" src="/Totebags/tote-green.png" alt="" draggable="false" decoding="async" />
+      <img class="foto foto-personalizado" src="/Totebags/tote-personalizado.png" alt="" draggable="false" decoding="async" />
+    </div>
   </div>
 </div>
 
@@ -276,6 +288,46 @@ const {
   .mockup-stage > svg {
     width: 100%;
     height: 100%;
+    transition: opacity var(--mov-150) var(--curva-deceleracion);
+  }
+
+  /* ---- Fotos reales del tote bag (public/Totebags) ----
+     Se activan con data-foto="beige|green|personalizado" y hacen
+     crossfade con el dibujo SVG y entre sí. */
+  .mockup-fotos {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .mockup-fotos .foto {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .mockup[data-foto='beige'] .foto-beige,
+  .mockup[data-foto='green'] .foto-green,
+  .mockup[data-foto='personalizado'] .foto-personalizado {
+    opacity: 1;
+  }
+
+  /* Con foto activa el dibujo SVG se desvanece, la caja se vuelve
+     cuadrada (las fotos son 1:1) y la sombra del filtro no aplica. */
+  .mockup[data-foto] svg {
+    opacity: 0;
+  }
+
+  .mockup[data-foto] {
+    filter: none;
+  }
+
+  .mockup[data-foto] .mockup-stage {
+    aspect-ratio: 1 / 1;
   }
 
   /* Visibilidad por producto */
@@ -317,103 +369,6 @@ const {
 
   .mockup[data-material='premium'] .tex {
     fill: url(#tex-premium);
-  }
-
-  /* Tipografía y color de la frase */
-  .mockup[data-fuente='moderna'] {
-    --fuente-frase: var(--fuente-ui);
-  }
-
-  .mockup[data-fuente='manuscrita'] {
-    --fuente-frase: var(--fuente-manuscrita);
-  }
-
-  .mockup[data-fuente='clasica'] {
-    --fuente-frase: var(--fuente-clasica);
-  }
-
-  .mockup[data-colortexto='carbon'] {
-    --color-frase: #1e1a18;
-  }
-
-  .mockup[data-colortexto='crema'] {
-    --color-frase: #faf8f3;
-  }
-
-  .mockup[data-colortexto='terracota'] {
-    --color-frase: #c86b45;
-  }
-
-  /* Frase estampada */
-  .mockup-phrase {
-    position: absolute;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-family: var(--fuente-frase, var(--fuente-ui));
-    font-weight: 600;
-    color: var(--color-frase, #1e1a18);
-    font-size: clamp(14px, 6.5cqw, 34px);
-    line-height: 1.18;
-    word-break: break-word;
-    pointer-events: none;
-  }
-
-  .mockup.stateful .mockup-phrase:not(:empty) {
-    display: flex;
-  }
-
-  .mockup[data-fuente='manuscrita'] .mockup-phrase {
-    font-size: clamp(16px, 8cqw, 40px);
-  }
-
-  /* Zonas de la frase — TOTE */
-  .mockup[data-product='tote'][data-pos='centro'] .mockup-phrase {
-    inset: 36% 20% 34% 20%;
-  }
-
-  .mockup[data-product='tote'][data-pos='inferior'] .mockup-phrase {
-    inset: 54% 24% 28% 24%;
-  }
-
-  .mockup[data-product='tote'][data-pos='esquina'] .mockup-phrase {
-    inset: 58% 46% 20% 12%;
-    justify-content: flex-start;
-    text-align: left;
-    font-size: clamp(12px, 5cqw, 24px);
-  }
-
-  /* Zonas — ORGANIZADOR */
-  .mockup[data-product='organizador'][data-pos='centro'] .mockup-phrase {
-    inset: 46% 20% 30% 20%;
-  }
-
-  .mockup[data-product='organizador'][data-pos='inferior'] .mockup-phrase {
-    inset: 60% 24% 22% 24%;
-  }
-
-  .mockup[data-product='organizador'][data-pos='esquina'] .mockup-phrase {
-    inset: 56% 44% 20% 10%;
-    justify-content: flex-start;
-    text-align: left;
-    font-size: clamp(12px, 5cqw, 24px);
-  }
-
-  /* Zonas — DECORATIVO */
-  .mockup[data-product='decorativo'][data-pos='centro'] .mockup-phrase {
-    inset: 38% 18% 40% 18%;
-  }
-
-  .mockup[data-product='decorativo'][data-pos='inferior'] .mockup-phrase {
-    inset: 50% 22% 34% 22%;
-  }
-
-  .mockup[data-product='decorativo'][data-pos='esquina'] .mockup-phrase {
-    inset: 30% 44% 46% 16%;
-    justify-content: flex-start;
-    text-align: left;
-    font-size: clamp(12px, 5.5cqw, 26px);
   }
 </style>
 

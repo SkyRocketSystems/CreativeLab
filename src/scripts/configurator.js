@@ -19,6 +19,15 @@ const PALETA = {
   crema: '#FAF8F3',
 };
 
+/* Fotos reales del tote bag (en public/Totebags). Solo estos colores del
+   tote tienen fotografía; organizador y decorativo usan el mockup SVG. */
+const FOTOS_TOTE = { natural: 'beige', salvia: 'green' };
+const RUTAS_FOTOS = {
+  beige: '/Totebags/tote-beige.png',
+  green: '/Totebags/tote-green.png',
+  personalizado: '/Totebags/tote-personalizado.png',
+};
+
 const NOMBRES = {
   productos: { tote: 'Tote bag', organizador: 'Organizador', decorativo: 'Decorativo' },
   colores: {
@@ -36,8 +45,6 @@ const NOMBRES = {
     premium: 'Material recuperado premium',
   },
   fuentes: { moderna: 'Moderna', manuscrita: 'Manuscrita', clasica: 'Clásica' },
-  colorTexto: { carbon: 'Carbón', crema: 'Crema', terracota: 'Terracota' },
-  posiciones: { centro: 'Centro', inferior: 'Inferior', esquina: 'Esquina' },
   extras: {
     bolsillo: 'Bolsillo interior',
     etiqueta: 'Etiqueta personalizada',
@@ -57,14 +64,30 @@ const ESTADO_INICIAL = {
   producto: 'tote',
   color: 'natural',
   material: 'lona',
-  frase: '',
+  tarjeta: { para: '', de: '', mensaje: '' },
   fuente: 'moderna',
-  colorTexto: 'carbon',
-  posicion: 'centro',
   extras: { bolsillo: false, etiqueta: false, empaque: false, tarjeta: false },
 };
 
 let estado = structuredClone(ESTADO_INICIAL);
+
+/* Campos de la tarjeta de regalo y su longitud máxima */
+const CAMPOS_TARJETA = { para: 30, de: 30, mensaje: 140 };
+
+const tarjetaTieneTexto = () =>
+  Boolean(
+    estado.tarjeta.para.trim() || estado.tarjeta.de.trim() || estado.tarjeta.mensaje.trim()
+  );
+
+/* Resumen corto de la dedicatoria: "Para X de Y" o "Con mensaje personalizado" */
+const resumenTarjeta = () => {
+  if (!tarjetaTieneTexto()) return 'Sin dedicatoria';
+  const partes = [
+    estado.tarjeta.para.trim() && `Para ${estado.tarjeta.para.trim()}`,
+    estado.tarjeta.de.trim() && `de ${estado.tarjeta.de.trim()}`,
+  ].filter(Boolean);
+  return partes.length ? partes.join(' ') : 'Con mensaje personalizado';
+};
 
 const PRESETS = {
   toteNatural: structuredClone(ESTADO_INICIAL),
@@ -72,21 +95,17 @@ const PRESETS = {
     producto: 'organizador',
     color: 'terracota',
     material: 'lienzo',
-    frase: 'Orden y calma',
+    tarjeta: { para: 'Laura', de: 'Equipo de ventas', mensaje: 'Orden y calma para tu día a día' },
     fuente: 'moderna',
-    colorTexto: 'crema',
-    posicion: 'inferior',
-    extras: { bolsillo: true, etiqueta: false, empaque: false, tarjeta: false },
+    extras: { bolsillo: true, etiqueta: false, empaque: false, tarjeta: true },
   },
   decorativoSalvia: {
     producto: 'decorativo',
     color: 'salvia',
     material: 'premium',
-    frase: 'Hogar dulce hogar',
+    tarjeta: { para: 'Mamá', de: 'Sofi', mensaje: 'Hogar dulce hogar' },
     fuente: 'manuscrita',
-    colorTexto: 'carbon',
-    posicion: 'centro',
-    extras: { bolsillo: false, etiqueta: true, empaque: false, tarjeta: false },
+    extras: { bolsillo: false, etiqueta: true, empaque: false, tarjeta: true },
   },
 };
 
@@ -116,7 +135,7 @@ function mostrarToast(mensaje) {
 
 function calcularTotales() {
   const base = PRECIOS.base[estado.producto] ?? 0;
-  const texto = estado.frase.trim() ? PRECIOS.texto : 0;
+  const texto = tarjetaTieneTexto() ? PRECIOS.texto : 0;
   const material = PRECIOS.material[estado.material] ?? 0;
   const extrasActivos = Object.entries(estado.extras)
     .filter(([, activo]) => activo)
@@ -131,23 +150,43 @@ function renderizarMockups() {
   $$('.mockup.stateful').forEach((mockup) => {
     mockup.dataset.product = estado.producto;
     mockup.dataset.material = estado.material;
-    mockup.dataset.pos = estado.posicion;
-    mockup.dataset.fuente = estado.fuente;
-    mockup.dataset.colortexto = estado.colorTexto;
     mockup.dataset.pocket = estado.extras.bolsillo ? 'on' : 'off';
     mockup.dataset.label = estado.extras.etiqueta ? 'on' : 'off';
+    /* Foto reactiva del tote: en el mockup final (Resumen) se muestra la
+       versión personalizada; en el resto, la del color elegido. */
+    const foto =
+      estado.producto === 'tote'
+        ? mockup.dataset.modo === 'final'
+          ? 'personalizado'
+          : FOTOS_TOTE[estado.color] ?? null
+        : null;
+    if (foto) mockup.dataset.foto = foto;
+    else mockup.removeAttribute('data-foto');
     mockup.style.setProperty('--fabric', colorHex);
     mockup.style.setProperty(
       '--stitch',
       luminancia(colorHex) > 0.45 ? 'rgba(30,26,24,.38)' : 'rgba(250,248,243,.45)'
     );
-    const frase = $('.mockup-phrase', mockup);
-    if (frase) frase.textContent = estado.frase.trim();
   });
   const modalTitulo = $('#modal-titulo');
   if (modalTitulo) {
     modalTitulo.textContent = `${NOMBRES.productos[estado.producto]} · ${NOMBRES.colores[estado.color]}`;
   }
+}
+
+/* ---------- Render: tarjeta de regalo ---------- */
+function renderizarTarjeta() {
+  $$('.tarjeta-regalo.stateful').forEach((tarjeta) => {
+    tarjeta.dataset.fuente = estado.fuente;
+    const para = $('.tr-para .tr-valor', tarjeta);
+    if (para) para.textContent = estado.tarjeta.para.trim();
+    const de = $('.tr-de .tr-valor', tarjeta);
+    if (de) de.textContent = estado.tarjeta.de.trim();
+    const mensaje = $('.tr-mensaje', tarjeta);
+    if (mensaje) mensaje.textContent = estado.tarjeta.mensaje.trim();
+  });
+  const bloqueResumen = $('#resumen-tarjeta');
+  if (bloqueResumen) bloqueResumen.hidden = !tarjetaTieneTexto();
 }
 
 /* ---------- Render: precio y desglose ---------- */
@@ -188,7 +227,7 @@ function renderizarProgreso() {
     Boolean(estado.producto),
     Boolean(estado.color),
     Boolean(estado.material),
-    Boolean(estado.frase.trim()),
+    tarjetaTieneTexto(),
     Object.values(estado.extras).some(Boolean),
   ];
   const listos = lista.filter(Boolean).length;
@@ -202,7 +241,7 @@ function renderizarProgreso() {
     barraRol.setAttribute('aria-valuenow', String(listos));
     barraRol.setAttribute(
       'aria-label',
-      `${listos} de 5 detalles listos: producto, color, material, texto y extras`
+      `${listos} de 5 detalles listos: producto, color, material, tarjeta y extras`
     );
   }
 }
@@ -219,9 +258,8 @@ function renderizarResumen() {
     '#val-producto': NOMBRES.productos[estado.producto],
     '#val-color': NOMBRES.colores[estado.color],
     '#val-material': NOMBRES.materiales[estado.material],
-    '#val-texto': estado.frase.trim() || 'Sin texto',
+    '#val-texto': resumenTarjeta(),
     '#val-fuente': NOMBRES.fuentes[estado.fuente],
-    '#val-posicion': NOMBRES.posiciones[estado.posicion],
     '#val-extras': extrasTexto,
   };
   Object.entries(valores).forEach(([sel, valor]) => {
@@ -244,31 +282,48 @@ function marcarSeleccion(selector, atributo, valorActual) {
 function renderizarControles() {
   marcarSeleccion('[data-elegir-producto]', 'elegirProducto', estado.producto);
   marcarSeleccion('[data-elegir-color]', 'elegirColor', estado.color);
+
+  /* El tote bag solo se ofrece en los colores con fotografía real */
+  $$('[data-elegir-color]').forEach((btn) => {
+    btn.hidden = estado.producto === 'tote' && !(btn.dataset.elegirColor in FOTOS_TOTE);
+  });
+  const notaColor = $('#nota-color');
+  if (notaColor) notaColor.hidden = estado.producto !== 'tote';
   marcarSeleccion('[data-elegir-material]', 'elegirMaterial', estado.material);
   marcarSeleccion('[data-elegir-fuente]', 'elegirFuente', estado.fuente);
-  marcarSeleccion('[data-elegir-colortexto]', 'elegirColortexto', estado.colorTexto);
-  marcarSeleccion('[data-elegir-posicion]', 'elegirPosicion', estado.posicion);
 
   $$('[data-extra]').forEach((input) => {
     input.checked = Boolean(estado.extras[input.dataset.extra]);
   });
 
-  const entrada = $('#entrada-frase');
-  if (entrada && entrada.value !== estado.frase) entrada.value = estado.frase;
-
-  const contador = $('#contador-frase');
-  if (contador) contador.textContent = `${estado.frase.length}/25`;
+  Object.entries(CAMPOS_TARJETA).forEach(([campo, max]) => {
+    const entrada = $(`#entrada-${campo}`);
+    if (entrada && entrada.value !== estado.tarjeta[campo]) entrada.value = estado.tarjeta[campo];
+    const contador = $(`#contador-${campo}`);
+    if (contador) contador.textContent = `${estado.tarjeta[campo].length}/${max}`;
+  });
 
   const nota = $('#nota-frase');
   if (nota) {
-    nota.textContent = estado.frase.trim()
+    nota.textContent = tarjetaTieneTexto()
       ? `Suma ${formatoCOP(PRECIOS.texto)} COP a tu total`
       : 'Este detalle es opcional';
   }
 }
 
+/* El tote bag solo está disponible en los colores con fotografía:
+   si el estado guardado (o un cambio de producto) trae otro color,
+   vuelve a natural. */
+function normalizarEstado() {
+  if (estado.producto === 'tote' && !(estado.color in FOTOS_TOTE)) {
+    estado.color = 'natural';
+  }
+}
+
 function render() {
+  normalizarEstado();
   renderizarMockups();
+  renderizarTarjeta();
   renderizarPrecio();
   renderizarProgreso();
   renderizarResumen();
@@ -315,13 +370,50 @@ function construirMensaje() {
     `Producto: ${NOMBRES.productos[estado.producto]}.`,
     `Color: ${NOMBRES.colores[estado.color]}.`,
     `Material: ${NOMBRES.materiales[estado.material]}.`,
-    `Frase: ${estado.frase.trim() ? `"${estado.frase.trim()}"` : 'Sin texto'}.`,
+    `Tarjeta de regalo: ${resumenTarjeta()}${
+      estado.tarjeta.mensaje.trim() ? ` — "${estado.tarjeta.mensaje.trim()}"` : ''
+    }.`,
     `Tipografía: ${NOMBRES.fuentes[estado.fuente]}.`,
-    `Posición: ${NOMBRES.posiciones[estado.posicion]}.`,
     `Extras: ${extras}.`,
     `Total estimado: ${formatoCOP(t.total)} COP.`,
     'Quiero confirmar disponibilidad, tiempo de entrega y opciones de envío.',
   ].join('\n');
+}
+
+/* ---------- Carrito ---------- */
+/* Convierte el estado del configurador en un item del carrito de productos
+   (independiente del de la caja). El id determinista agrupa en una sola
+   línea los diseños idénticos. */
+function construirItemCarrito() {
+  const t = calcularTotales();
+  const extras = t.extrasActivos.slice().sort();
+  const detalles = [
+    NOMBRES.colores[estado.color],
+    NOMBRES.materiales[estado.material],
+    tarjetaTieneTexto() ? resumenTarjeta() : null,
+    extras.length ? extras.map((clave) => NOMBRES.extras[clave]).join(', ') : null,
+  ].filter(Boolean);
+  const id = [
+    'producto',
+    estado.producto,
+    estado.color,
+    estado.material,
+    estado.fuente,
+    estado.tarjeta.para.trim(),
+    estado.tarjeta.de.trim(),
+    estado.tarjeta.mensaje.trim(),
+    extras.join('+'),
+  ].join('|');
+  return {
+    id,
+    tipo: 'producto',
+    nombre: NOMBRES.productos[estado.producto],
+    descripcion: detalles.join(' · '),
+    precio: t.total,
+    cantidad: 1,
+    color: PALETA[estado.color],
+    producto: estado.producto,
+  };
 }
 
 function inicializarAcciones() {
@@ -342,6 +434,14 @@ function inicializarAcciones() {
           'Modo demo: define WHATSAPP_NUMBER en src/scripts/configurator.js. El mensaje se copió a tu portapapeles.'
         );
       }
+    });
+  });
+
+  $$('[data-accion="agregar-carrito"]').forEach((boton) => {
+    boton.addEventListener('click', () => {
+      if (!window.Carrito?.productos) return;
+      window.Carrito.productos.agregar(construirItemCarrito());
+      mostrarToast('Tu diseño fue agregado al carrito');
     });
   });
 
@@ -388,23 +488,13 @@ function inicializarConfigurador() {
       render();
     });
   });
-  $$('[data-elegir-colortexto]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      estado.colorTexto = btn.dataset.elegirColortexto;
-      render();
-    });
-  });
-  $$('[data-elegir-posicion]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      estado.posicion = btn.dataset.elegirPosicion;
-      render();
-    });
-  });
 
-  const entrada = $('#entrada-frase');
-  entrada?.addEventListener('input', () => {
-    estado.frase = entrada.value.slice(0, 25);
-    render();
+  Object.entries(CAMPOS_TARJETA).forEach(([campo, max]) => {
+    const entrada = $(`#entrada-${campo}`);
+    entrada?.addEventListener('input', () => {
+      estado.tarjeta[campo] = entrada.value.slice(0, max);
+      render();
+    });
   });
 
   $$('[data-extra]').forEach((input) => {
@@ -521,9 +611,7 @@ function inicializarHeader() {
   $('#btn-buscar')?.addEventListener('click', () =>
     mostrarToast('La búsqueda estará disponible muy pronto')
   );
-  $('#btn-carrito')?.addEventListener('click', () =>
-    mostrarToast('Tu carrito está vacío por ahora. Crea tu primer diseño ✨')
-  );
+  /* El botón del carrito lo maneja src/scripts/carrito.js (drawer compartido) */
 
   /* Scrollspy: marca el enlace de la sección visible */
   const enlaces = $$('.nav-link');
@@ -631,12 +719,19 @@ function restaurarDisenoGuardado() {
     estado = {
       ...structuredClone(ESTADO_INICIAL),
       ...datos,
+      tarjeta: { ...ESTADO_INICIAL.tarjeta, ...(datos.tarjeta ?? {}) },
       extras: { ...ESTADO_INICIAL.extras, ...(datos.extras ?? {}) },
     };
   } catch {
     /* si el storage está corrupto, se usa el estado inicial */
   }
 }
+
+/* Precarga las fotos del tote para que el crossfade sea instantáneo */
+Object.values(RUTAS_FOTOS).forEach((src) => {
+  const img = new Image();
+  img.src = src;
+});
 
 restaurarDisenoGuardado();
 inicializarTabs();

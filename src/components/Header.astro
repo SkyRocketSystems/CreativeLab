@@ -49,12 +49,12 @@ const enlaces = [
           <path d="m20 20-3.5-3.5"></path>
         </svg>
       </button>
-      <button class="icon-btn" id="btn-carrito" type="button" aria-label="Carrito, 0 productos">
+      <button class="icon-btn" id="btn-carrito" type="button" aria-label="Carrito, 0 productos" data-abrir-carrito="productos">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <path d="M6 8h12l-1.2 12H7.2L6 8Z"></path>
           <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
         </svg>
-        <span class="badge" aria-hidden="true">0</span>
+        <span class="badge badge-carrito" data-ambito="productos" aria-hidden="true" hidden>0</span>
       </button>
       <a class="btn btn-oscuro cabecera-cta" href="#panel-configurador">Crear producto →</a>
       <button
@@ -188,43 +188,30 @@ const enlaces = [
     }
   }
 
+  /* Enlaces como ítems de toolbar: relleno al hover, sin subrayados ni lifts */
   .nav-link {
-    position: relative;
     display: inline-flex;
     align-items: center;
-    min-height: 44px;
-    padding: 8px 2px;
-    font-size: 14px;
+    min-height: 36px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13.5px;
     font-weight: 500;
     color: rgba(30, 26, 24, 0.72);
-    transition: color var(--mov-150) var(--curva-deceleracion);
+    transition: background-color var(--mov-150) var(--curva-deceleracion),
+      color var(--mov-150) var(--curva-deceleracion);
   }
 
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 4px;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--terracota);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform var(--mov-150) var(--curva-deceleracion);
-  }
-
-  .nav-link:hover {
-    color: var(--carbon);
+  @media (hover: hover) {
+    .nav-link:hover {
+      background: rgba(30, 26, 24, 0.06);
+      color: var(--carbon);
+    }
   }
 
   .nav-link.is-activa {
     color: var(--carbon);
     font-weight: 600;
-  }
-
-  .nav-link.is-activa::after {
-    transform: scaleX(1);
   }
 
   /* Acciones */
@@ -247,8 +234,10 @@ const enlaces = [
       transform var(--mov-100) var(--curva-deceleracion);
   }
 
-  .icon-btn:hover {
-    background: rgba(230, 222, 201, 0.6);
+  @media (hover: hover) {
+    .icon-btn:hover {
+      background: rgba(30, 26, 24, 0.06);
+    }
   }
 
   .icon-btn:active {
@@ -357,6 +346,21 @@ const enlaces = [
     padding-block: 8px;
   }
 
+  .menu-lista li {
+    position: relative;
+  }
+
+  /* Separador hairline inset desde el borde, como los menús de iOS/macOS */
+  .menu-lista li + li::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 0;
+    height: 0.5px;
+    background: var(--carbon-12);
+  }
+
   .menu-lista a {
     display: flex;
     align-items: center;
@@ -364,11 +368,13 @@ const enlaces = [
     font-size: 16px;
     font-weight: 600;
     padding: 8px 12px;
-    border-radius: 14px;
+    border-radius: 10px;
   }
 
-  .menu-lista a:hover {
-    background: var(--beige-suave);
+  @media (hover: hover) {
+    .menu-lista a:hover {
+      background: rgba(30, 26, 24, 0.05);
+    }
   }
 
   .menu-cta {

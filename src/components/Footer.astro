@@ -121,10 +121,12 @@ const anio = new Date().getFullYear();
       border-color var(--mov-150) var(--curva-deceleracion);
   }
 
-  .pie-redes a:hover,
-  .pie-redes button:hover {
-    background: rgba(230, 222, 201, 0.14);
-    border-color: var(--beige);
+  @media (hover: hover) {
+    .pie-redes a:hover,
+    .pie-redes button:hover {
+      background: rgba(230, 222, 201, 0.14);
+      border-color: var(--beige);
+    }
   }
 
   .pie-redes svg {
@@ -155,8 +157,10 @@ const anio = new Date().getFullYear();
     min-height: 24px;
   }
 
-  .pie-nav a:hover {
-    text-decoration: underline;
+  @media (hover: hover) {
+    .pie-nav a:hover {
+      text-decoration: underline;
+    }
   }
 
   .pie-legal {

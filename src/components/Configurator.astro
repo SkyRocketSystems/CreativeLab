@@ -1,5 +1,6 @@
 ---
 import ProductMockup from './ProductMockup.astro';
+import TarjetaRegalo from './TarjetaRegalo.astro';
 
 const productos = [
   { id: 'tote', nombre: 'Tote bag', precio: 40000 },
@@ -124,7 +125,7 @@ const extras = [
               type="button"
             >
               <span class="opcion-thumb">
-                <ProductMockup product={p.id} color="#E6DEC9" etiqueta="" />
+                <ProductMockup product={p.id} color="#E6DEC9" etiqueta="" foto={p.id === 'tote' ? 'beige' : null} />
               </span>
               <span class="opcion-info">
                 <span class="opcion-nombre">{p.nombre}</span>
@@ -145,6 +146,7 @@ const extras = [
     <!-- TAB: COLOR (activa por defecto) -->
     <div class="tab-panel" id="panel-color" role="tabpanel" aria-labelledby="tab-color">
       <p class="panel-titulo">Escoge un color</p>
+      <p class="nota-frase" id="nota-color" hidden>El tote bag está disponible en Natural y Verde salvia.</p>
       <div class="muestras" role="group" aria-label="Colores disponibles">
         {
           colores.map((c) => (
@@ -198,18 +200,51 @@ const extras = [
       </div>
     </div>
 
-    <!-- TAB: TEXTO -->
+    <!-- TAB: TEXTO (tarjeta de regalo) -->
     <div class="tab-panel" id="panel-texto" role="tabpanel" aria-labelledby="tab-texto" hidden>
-      <label class="panel-titulo" for="entrada-frase">Tu frase o nombre</label>
-      <div class="frase-fila">
-        <input
-          id="entrada-frase"
-          type="text"
-          maxlength="25"
-          placeholder="Ejemplo: Hecho para Laura"
-          autocomplete="off"
-        />
-        <span class="contador" id="contador-frase" aria-live="polite">0/25</span>
+      <p class="panel-titulo">Tu tarjeta de regalo</p>
+
+      <TarjetaRegalo stateful={true} />
+
+      <div class="tarjeta-campos">
+        <div class="campo-tarjeta">
+          <label class="campo-etiqueta" for="entrada-para">Para</label>
+          <div class="frase-fila">
+            <input
+              id="entrada-para"
+              type="text"
+              maxlength="30"
+              placeholder="Quién la recibe"
+              autocomplete="off"
+            />
+            <span class="contador" id="contador-para" aria-live="polite">0/30</span>
+          </div>
+        </div>
+        <div class="campo-tarjeta">
+          <label class="campo-etiqueta" for="entrada-de">De</label>
+          <div class="frase-fila">
+            <input
+              id="entrada-de"
+              type="text"
+              maxlength="30"
+              placeholder="Tu nombre"
+              autocomplete="off"
+            />
+            <span class="contador" id="contador-de" aria-live="polite">0/30</span>
+          </div>
+        </div>
+        <div class="campo-tarjeta campo-mensaje">
+          <label class="campo-etiqueta" for="entrada-mensaje">Mensaje</label>
+          <div class="frase-fila frase-fila-area">
+            <textarea
+              id="entrada-mensaje"
+              maxlength="140"
+              rows="3"
+              placeholder="Escribe unas palabras para acompañar el regalo"
+            ></textarea>
+            <span class="contador" id="contador-mensaje" aria-live="polite">0/140</span>
+          </div>
+        </div>
       </div>
       <p class="nota-frase" id="nota-frase">Este detalle es opcional</p>
 
@@ -220,28 +255,6 @@ const extras = [
             <button data-elegir-fuente="moderna" aria-pressed="true" type="button">Moderna</button>
             <button data-elegir-fuente="manuscrita" aria-pressed="false" type="button">Manuscrita</button>
             <button data-elegir-fuente="clasica" aria-pressed="false" type="button">Clásica</button>
-          </div>
-        </div>
-        <div class="segmento">
-          <span class="segmento-label" id="label-colortexto">Color del texto</span>
-          <div class="segmento-grupo" role="group" aria-labelledby="label-colortexto">
-            <button data-elegir-colortexto="carbon" aria-pressed="true" type="button">
-              <span class="punto" style="--punto:#1E1A18" aria-hidden="true"></span>Carbón
-            </button>
-            <button data-elegir-colortexto="crema" aria-pressed="false" type="button">
-              <span class="punto" style="--punto:#FAF8F3" aria-hidden="true"></span>Crema
-            </button>
-            <button data-elegir-colortexto="terracota" aria-pressed="false" type="button">
-              <span class="punto" style="--punto:#C86B45" aria-hidden="true"></span>Terracota
-            </button>
-          </div>
-        </div>
-        <div class="segmento">
-          <span class="segmento-label" id="label-posicion">Ubicación</span>
-          <div class="segmento-grupo" role="group" aria-labelledby="label-posicion">
-            <button data-elegir-posicion="centro" aria-pressed="true" type="button">Centro</button>
-            <button data-elegir-posicion="inferior" aria-pressed="false" type="button">Inferior</button>
-            <button data-elegir-posicion="esquina" aria-pressed="false" type="button">Esquina</button>
           </div>
         </div>
       </div>
@@ -286,13 +299,16 @@ const extras = [
     container-type: inline-size;
   }
 
-  /* Tabs */
+  /* Tabs como control segmentado (iOS): contenedor beige translúcido,
+     segmento activo crema elevado con texto carbón. */
   .panel-tabs {
     display: flex;
-    gap: 6px;
+    gap: 2px;
     overflow-x: auto;
     scrollbar-width: none;
-    padding-bottom: 2px;
+    background: var(--segmento-fondo);
+    border-radius: 12px;
+    padding: 2px;
   }
 
   .panel-tabs::-webkit-scrollbar {
@@ -305,15 +321,14 @@ const extras = [
     gap: 7px;
     min-height: 40px;
     padding: 8px 14px;
-    border-radius: var(--radius-pill);
-    border: 1px solid transparent;
+    border-radius: 10px;
     font-size: 13px;
     font-weight: 600;
-    color: rgba(30, 26, 24, 0.66);
+    color: rgba(30, 26, 24, 0.6);
     white-space: nowrap;
     transition: background-color var(--mov-150) var(--curva-deceleracion),
       color var(--mov-150) var(--curva-deceleracion),
-      border-color var(--mov-150) var(--curva-deceleracion),
+      box-shadow var(--mov-150) var(--curva-deceleracion),
       transform var(--mov-100) var(--curva-deceleracion);
   }
 
@@ -326,15 +341,16 @@ const extras = [
     height: 15px;
   }
 
-  .tab:hover {
-    color: var(--carbon);
-    background: rgba(230, 222, 201, 0.45);
+  @media (hover: hover) {
+    .tab:hover {
+      color: var(--carbon);
+    }
   }
 
   .tab.is-activa {
-    background: var(--beige);
-    color: var(--terracota);
-    border-color: rgba(200, 107, 69, 0.35);
+    background: var(--crema);
+    color: var(--carbon);
+    box-shadow: var(--sombra-tarjeta);
   }
 
   /* Cuerpo */
@@ -375,13 +391,15 @@ const extras = [
     transform: scale(0.98);
   }
 
-  .opcion-producto:hover {
-    border-color: var(--beige-linea);
+  @media (hover: hover) {
+    .opcion-producto:hover {
+      border-color: var(--beige-linea);
+    }
   }
 
   .opcion-producto.is-selected {
     border-color: var(--terracota);
-    box-shadow: 0 6px 16px rgba(200, 107, 69, 0.16);
+    box-shadow: var(--sombra-tarjeta);
   }
 
   .opcion-thumb {
@@ -439,6 +457,11 @@ const extras = [
     scrollbar-width: thin;
   }
 
+  /* .muestra declara display:flex: sin este guard, [hidden] no ocultaría */
+  .muestra[hidden] {
+    display: none;
+  }
+
   .muestra {
     display: flex;
     flex-direction: column;
@@ -450,8 +473,10 @@ const extras = [
     transition: background-color var(--mov-150) var(--curva-deceleracion);
   }
 
-  .muestra:hover {
-    background: rgba(230, 222, 201, 0.5);
+  @media (hover: hover) {
+    .muestra:hover {
+      background: rgba(230, 222, 201, 0.5);
+    }
   }
 
   .muestra-chip {
@@ -476,8 +501,7 @@ const extras = [
 
   .muestra.is-selected .muestra-chip {
     border-color: var(--terracota);
-    box-shadow: 0 6px 14px rgba(200, 107, 69, 0.3);
-    transform: translateY(-2px);
+    box-shadow: inset 0 0 0 1px rgba(30, 26, 24, 0.1), var(--sombra-tarjeta);
   }
 
   .muestra-chip .check {
@@ -540,13 +564,15 @@ const extras = [
     transform: scale(0.98);
   }
 
-  .opcion-material:hover {
-    border-color: var(--beige-linea);
+  @media (hover: hover) {
+    .opcion-material:hover {
+      border-color: var(--beige-linea);
+    }
   }
 
   .opcion-material.is-selected {
     border-color: var(--terracota);
-    box-shadow: 0 6px 16px rgba(200, 107, 69, 0.16);
+    box-shadow: var(--sombra-tarjeta);
   }
 
   .material-textura {
@@ -638,7 +664,57 @@ const extras = [
   .nota-frase {
     font-size: 12px;
     color: rgba(30, 26, 24, 0.55);
-    margin-top: 6px;
+    margin-top: 10px;
+  }
+
+  /* Tab texto — campos de la tarjeta de regalo */
+  .tarjeta-campos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .campo-tarjeta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .campo-tarjeta.campo-mensaje {
+    grid-column: 1 / -1;
+  }
+
+  .campo-etiqueta {
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(30, 26, 24, 0.6);
+  }
+
+  .frase-fila-area {
+    align-items: flex-start;
+  }
+
+  .frase-fila textarea {
+    flex: 1;
+    min-height: 74px;
+    border: none;
+    background: transparent;
+    padding: 10px 4px 10px 12px;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--carbon);
+    resize: none;
+  }
+
+  .frase-fila textarea:focus {
+    outline: none;
+  }
+
+  .campo-mensaje .contador {
+    padding-top: 11px;
   }
 
   .segmentados {
@@ -662,10 +738,9 @@ const extras = [
 
   .segmento-grupo {
     display: inline-flex;
-    background: var(--beige-suave);
-    border: 1px solid var(--beige-linea);
-    border-radius: var(--radius-pill);
-    padding: 3px;
+    background: var(--segmento-fondo);
+    border-radius: 12px;
+    padding: 2px;
   }
 
   .segmento-grupo button {
@@ -674,7 +749,7 @@ const extras = [
     gap: 6px;
     min-height: 38px;
     padding: 6px 14px;
-    border-radius: var(--radius-pill);
+    border-radius: 10px;
     font-size: 13px;
     font-weight: 600;
     color: rgba(30, 26, 24, 0.65);
@@ -686,13 +761,15 @@ const extras = [
     transform: scale(0.97);
   }
 
-  .segmento-grupo button:hover {
-    color: var(--carbon);
+  @media (hover: hover) {
+    .segmento-grupo button:hover {
+      color: var(--carbon);
+    }
   }
 
   .segmento-grupo button[aria-pressed='true'] {
     background: var(--crema);
-    color: var(--terracota);
+    color: var(--carbon);
     box-shadow: var(--sombra-tarjeta);
   }
 
@@ -704,20 +781,12 @@ const extras = [
     box-shadow: inset 0 0 0 1px rgba(30, 26, 24, 0.25);
   }
 
-  /* Tab extras — dos columnas solo cuando el ancho REAL del panel lo permite
-     (container query). Un media query de viewport forzaba 2 columnas dentro
-     del panel flotante de desktop (~420px) y los ítems desbordaban el
-     contenedor. Sin soporte de container queries queda en 1 columna. */
+  /* Tab extras — lista agrupada inset (iOS): contenedor único beige suave,
+     filas separadas por hairlines alineados tras el interruptor. */
   .extras-lista {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
-
-  @container (min-width: 560px) {
-    .extras-lista {
-      grid-template-columns: 1fr 1fr;
-    }
+    background: var(--beige-suave);
+    border-radius: 16px;
+    overflow: hidden;
   }
 
   .extra {
@@ -726,20 +795,30 @@ const extras = [
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 12px;
-    border-radius: 16px;
-    border: 1.5px solid transparent;
-    background: var(--crema);
+    padding: 12px;
     cursor: pointer;
-    transition: border-color var(--mov-150) var(--curva-deceleracion);
+    transition: background-color var(--mov-150) var(--curva-deceleracion);
+  }
+
+  /* Hairline 0.5px que no cruza la columna del interruptor (12+50+12px) */
+  .extra + .extra::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 74px;
+    right: 0;
+    height: 0.5px;
+    background: var(--carbon-12);
   }
 
   .extra:active {
     transform: scale(0.99);
   }
 
-  .extra:hover {
-    border-color: var(--beige-linea);
+  @media (hover: hover) {
+    .extra:hover {
+      background: rgba(30, 26, 24, 0.03);
+    }
   }
 
   .extra input {
@@ -749,33 +828,31 @@ const extras = [
     height: 1px;
   }
 
+  /* Interruptor estilo UISwitch: 50×30, pulgar 26, apagado alfa de carbón */
   .extra .interruptor {
-    width: 48px;
-    min-width: 48px;
-    height: 28px;
+    width: 50px;
+    min-width: 50px;
+    height: 30px;
     border-radius: var(--radius-pill);
-    background: var(--beige);
-    border: 1px solid var(--beige-linea);
+    background: var(--interruptor-off);
     position: relative;
-    transition: background-color var(--mov-150) var(--curva-deceleracion),
-      border-color var(--mov-150) var(--curva-deceleracion);
+    transition: background-color var(--mov-150) var(--curva-deceleracion);
   }
 
   .extra .interruptor-pulgar {
     position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 20px;
-    height: 20px;
+    top: 2px;
+    left: 2px;
+    width: 26px;
+    height: 26px;
     border-radius: 50%;
     background: var(--crema);
-    box-shadow: 0 2px 5px rgba(30, 26, 24, 0.25);
+    box-shadow: 0 3px 8px rgba(30, 26, 24, 0.15), 0 1px 1px rgba(30, 26, 24, 0.16);
     transition: transform var(--mov-150) var(--curva-deceleracion);
   }
 
   .extra input:checked + .interruptor {
     background: var(--terracota);
-    border-color: var(--terracota);
   }
 
   .extra input:checked + .interruptor .interruptor-pulgar {

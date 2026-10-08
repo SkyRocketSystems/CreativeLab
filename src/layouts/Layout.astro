@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import '../styles/print.css';
+import CarritoDrawer from '../components/CarritoDrawer.astro';
 
 interface Props {
   title: string;
@@ -26,6 +27,12 @@ const {
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#FAF8F3" />
+    <!-- Instalación estilo app en Safari (Añadir a pantalla de inicio → standalone) -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CreativeLab" />
+    <meta name="format-detection" content="telephone=no" />
     <title>{title}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -85,6 +92,10 @@ const {
       </defs>
     </svg>
     <slot />
+    <!-- Dos carritos independientes: productos ("Crea el tuyo") y caja (suscripción) -->
+    <CarritoDrawer ambito="productos" />
+    <CarritoDrawer ambito="caja" />
+    <script src="../scripts/carrito.js"></script>
   </body>
 </html>
 

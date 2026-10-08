@@ -49,6 +49,13 @@ import ProductMockup from '../components/ProductMockup.astro';
     <span class="barra-precio">
       Total: <strong id="barra-precio">$40.000 COP</strong>
     </span>
+    <button class="barra-carrito" data-abrir-carrito="productos" type="button" aria-label="Carrito, 0 productos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M6 8h12l-1.2 12H7.2L6 8Z"></path>
+        <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+      </svg>
+      <span class="barra-badge badge-carrito" data-ambito="productos" aria-hidden="true" hidden>0</span>
+    </button>
     <button class="btn btn-primario" data-accion="whatsapp" type="button">Pedir por WhatsApp</button>
   </div>
 
@@ -82,6 +89,54 @@ import ProductMockup from '../components/ProductMockup.astro';
 
   .modal-producto :global(.mockup) {
     width: min(80%, 420px);
+  }
+
+  /* Botón del carrito en la barra sticky móvil (lo abre src/scripts/carrito.js) */
+  .barra-carrito {
+    position: relative;
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1px solid rgba(250, 248, 243, 0.35);
+    background: rgba(250, 248, 243, 0.12);
+    color: var(--crema);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform var(--mov-100) var(--curva-deceleracion);
+  }
+
+  .barra-carrito svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .barra-carrito:active {
+    transform: scale(0.94);
+  }
+
+  .barra-carrito:focus-visible {
+    outline: 2px solid var(--crema);
+    outline-offset: 2px;
+  }
+
+  .barra-carrito .barra-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 18px;
+    height: 18px;
+    padding-inline: 4px;
+    border-radius: var(--radius-pill);
+    background: var(--terracota);
+    color: var(--crema);
+    font-size: 10.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>
 

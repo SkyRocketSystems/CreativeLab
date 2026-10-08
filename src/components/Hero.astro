@@ -95,7 +95,7 @@ const beneficios = [
         </div>
         <div class="presets">
           <button class="preset" data-preset="toteNatural" data-nombre="Tote Natural" type="button">
-            <span class="preset-thumb"><ProductMockup product="tote" color="#E6DEC9" etiqueta="" /></span>
+            <span class="preset-thumb"><ProductMockup product="tote" color="#E6DEC9" etiqueta="" foto="beige" /></span>
             <span class="preset-nombre">Tote Natural</span>
             <span class="preset-estado">Editado hoy</span>
           </button>
@@ -123,7 +123,7 @@ const beneficios = [
           </span>
         </div>
         <p class="progreso-indicador"><span id="progreso-contador">3 de 5</span> detalles listos</p>
-        <p class="progreso-ayuda">Completa producto, color, material, texto y extras.</p>
+        <p class="progreso-ayuda">Completa producto, color, material, tarjeta y extras.</p>
         <div
           class="barra"
           id="barra-progreso-fondo"
@@ -334,9 +334,10 @@ const beneficios = [
       background-color var(--mov-150) var(--curva-deceleracion);
   }
 
-  .preview-ampliar:hover {
-    background: var(--beige);
-    transform: scale(1.06);
+  @media (hover: hover) {
+    .preview-ampliar:hover {
+      background: var(--beige);
+    }
   }
 
   .preview-ampliar:active {
@@ -492,10 +493,11 @@ const beneficios = [
       box-shadow var(--mov-150) var(--curva-deceleracion);
   }
 
-  .preset:hover {
-    border-color: var(--terracota);
-    transform: translateY(-2px);
-    box-shadow: var(--sombra-tarjeta);
+  @media (hover: hover) {
+    .preset:hover {
+      border-color: var(--terracota);
+      box-shadow: var(--sombra-tarjeta);
+    }
   }
 
   .preset:active {
@@ -639,8 +641,10 @@ const beneficios = [
     margin-top: 4px;
   }
 
-  .mini-enlace:hover {
-    text-decoration: underline;
+  @media (hover: hover) {
+    .mini-enlace:hover {
+      text-decoration: underline;
+    }
   }
 
   /* ---------- Tablet: grid de 6 columnas ---------- */

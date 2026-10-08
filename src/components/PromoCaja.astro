@@ -94,8 +94,10 @@
     transition: background-color var(--mov-150) var(--curva-deceleracion);
   }
 
-  .promo-link:hover .promo-cta {
-    background: var(--beige);
+  @media (hover: hover) {
+    .promo-link:hover .promo-cta {
+      background: var(--beige);
+    }
   }
 
   .promo-cerrar {
@@ -110,9 +112,11 @@
       background-color var(--mov-150) var(--curva-deceleracion);
   }
 
-  .promo-cerrar:hover {
-    opacity: 1;
-    background: rgba(30, 26, 24, 0.16);
+  @media (hover: hover) {
+    .promo-cerrar:hover {
+      opacity: 1;
+      background: rgba(30, 26, 24, 0.16);
+    }
   }
 
   .promo-cerrar svg {

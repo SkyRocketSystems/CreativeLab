@@ -1,0 +1,487 @@
+---
+// Drawer del carrito: uno por ámbito. Layout.astro lo renderiza dos veces:
+// <CarritoDrawer ambito="productos" /> ("Crea el tuyo") y
+// <CarritoDrawer ambito="caja" /> ("La caja"). Son carritos independientes.
+// - La lógica (estado, render, apertura/cierre) vive en src/scripts/carrito.js.
+// - Los estilos usan "is:global" con prefijo .carrito- porque el listado de
+//   items lo inyecta JS en tiempo de ejecución (el scoping de Astro no les
+//   aplicaría estilos). El prefijo evita colisiones con otras páginas.
+// - La regla .badge-carrito[hidden] también da soporte a los badges de
+//   Header.astro, la barra móvil del index y el header de la caja (cada
+//   badge declara su ámbito con data-ambito).
+
+interface Props {
+  ambito: 'productos' | 'caja';
+}
+
+const { ambito } = Astro.props;
+const esCaja = ambito === 'caja';
+
+const titulo = esCaja ? 'Tu suscripción' : 'Tu carrito';
+const tituloCerrar = esCaja ? 'Cerrar suscripción' : 'Cerrar carrito';
+const vacioTitulo = esCaja ? 'Aún no has elegido tu caja' : 'Tu carrito está vacío';
+const vacioTexto = esCaja
+  ? 'Elige un plan semestral o anual y recibe una caja con propósito cada mes.'
+  : 'Crea un producto a tu medida o suscríbete a la caja mensual con propósito.';
+const accionPrimaria = esCaja
+  ? { texto: 'Elegir mi plan', href: '/caja-creativelab/#planes' }
+  : { texto: 'Crear mi producto', href: '/#crear' };
+const accionSecundaria = esCaja
+  ? { texto: 'Crear mi producto', href: '/#crear' }
+  : { texto: 'Ver la caja', href: '/caja-creativelab/' };
+const envioTexto = esCaja ? 'Incluido en la suscripción' : 'Incluido';
+
+/* IDs por ámbito, calculados una sola vez en el frontmatter */
+const idDrawer = `carrito-drawer-${ambito}`;
+const idTitulo = `carrito-titulo-${ambito}`;
+const idVacio = `carrito-vacio-${ambito}`;
+const idContenido = `carrito-contenido-${ambito}`;
+const idItems = `carrito-items-${ambito}`;
+const idPie = `carrito-pie-${ambito}`;
+const idSubtotal = `carrito-subtotal-${ambito}`;
+const idTotal = `carrito-total-${ambito}`;
+const idPagar = `carrito-pagar-${ambito}`;
+const hrefPago = `/pago/?ambito=${ambito}`;
+---
+
+<div class="carrito-drawer" id={idDrawer} data-carrito-ambito={ambito}>
+  <div class="carrito-fondo" data-cerrar-carrito></div>
+  <aside class="carrito-panel" role="dialog" aria-modal="true" aria-labelledby={idTitulo}>
+    <header class="carrito-cabecera">
+      <h2 id={idTitulo}>{titulo}</h2>
+      <button class="carrito-cerrar" data-cerrar-carrito type="button" aria-label={tituloCerrar}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div class="carrito-cuerpo">
+      <!-- Estado vacío -->
+      <div class="carrito-vacio" id={idVacio} hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 8h12l-1.2 12H7.2L6 8Z"></path>
+          <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+        </svg>
+        <p class="carrito-vacio-titulo">{vacioTitulo}</p>
+        <p class="carrito-vacio-texto">{vacioTexto}</p>
+        <div class="carrito-vacio-acciones">
+          <a class="carrito-btn carrito-btn-primario" href={accionPrimaria.href}>{accionPrimaria.texto}</a>
+          <a class="carrito-btn carrito-btn-borde" href={accionSecundaria.href}>{accionSecundaria.texto}</a>
+        </div>
+      </div>
+
+      <!-- Listado de items (lo llena carrito.js) -->
+      <div class="carrito-contenido" id={idContenido} hidden>
+        <ul class="carrito-lista" id={idItems}></ul>
+      </div>
+    </div>
+
+    <footer class="carrito-pie" id={idPie} hidden>
+      <dl class="carrito-totales">
+        <div><dt>Subtotal</dt><dd id={idSubtotal}>$0 COP</dd></div>
+        <div><dt>Envío</dt><dd>{envioTexto}</dd></div>
+        <div class="carrito-total"><dt>Total</dt><dd id={idTotal}>$0 COP</dd></div>
+      </dl>
+      <a class="carrito-btn carrito-btn-primario carrito-btn-pagar" id={idPagar} href={hrefPago}>Pagar ahora</a>
+    </footer>
+  </aside>
+</div>
+
+<style is:global>
+  /* Contenedor: misma técnica que el menú móvil del Header */
+  .carrito-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 145; /* sobre el header (130) y el menú móvil (140) */
+    visibility: hidden;
+  }
+
+  .carrito-drawer.es-abierto {
+    visibility: visible;
+  }
+
+  .carrito-fondo {
+    position: absolute;
+    inset: 0;
+    background: rgba(30, 26, 24, 0.4);
+    opacity: 0;
+    transition: opacity var(--mov-300) var(--curva-aceleracion);
+  }
+
+  .carrito-drawer.es-abierto .carrito-fondo {
+    opacity: 1;
+    transition: opacity var(--mov-300) var(--curva-deceleracion);
+  }
+
+  .carrito-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(420px, 92vw);
+    background: var(--material-panel);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform var(--mov-300) var(--curva-aceleracion);
+    box-shadow: var(--sombra-media);
+  }
+
+  .carrito-drawer.es-abierto .carrito-panel {
+    transform: translateX(0);
+    transition: transform var(--mov-300) var(--curva-deceleracion);
+  }
+
+  .carrito-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--beige-linea);
+  }
+
+  .carrito-cabecera h2 {
+    font: 600 20px var(--fuente-display);
+    margin: 0;
+  }
+
+  .carrito-cerrar {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--carbon);
+    cursor: pointer;
+    transition: background-color var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .carrito-cerrar svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .carrito-cerrar:focus-visible {
+    outline: 2px solid var(--terracota);
+    outline-offset: 2px;
+  }
+
+  @media (hover: hover) {
+    .carrito-cerrar:hover {
+      background: rgba(30, 26, 24, 0.06);
+    }
+  }
+
+  .carrito-cuerpo {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px 20px;
+  }
+
+  /* Estado vacío */
+  .carrito-vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 48px 8px;
+  }
+
+  .carrito-vacio svg {
+    width: 44px;
+    height: 44px;
+    color: rgba(30, 26, 24, 0.35);
+    margin-bottom: 6px;
+  }
+
+  .carrito-vacio-titulo {
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .carrito-vacio-texto {
+    font-size: 14px;
+    color: rgba(30, 26, 24, 0.6);
+    margin: 0 0 14px;
+  }
+
+  .carrito-vacio-acciones {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  /* Items */
+  .carrito-lista {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .carrito-item {
+    position: relative;
+    display: flex;
+    gap: 12px;
+    padding: 14px 0;
+  }
+
+  .carrito-item + .carrito-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 60px; /* alineado tras el visual de 48px + gap 12px */
+    right: 0;
+    height: 0.5px;
+    background: rgba(30, 26, 24, 0.12);
+  }
+
+  .carrito-visual {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 12px;
+    background: var(--visual-fondo, var(--beige));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(30, 26, 24, 0.12);
+  }
+
+  .carrito-visual svg {
+    width: 22px;
+    height: 22px;
+    color: var(--visual-tinta, rgba(30, 26, 24, 0.85));
+  }
+
+  .carrito-item-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .carrito-item-nombre,
+  .carrito-item-desc,
+  .carrito-item-precio {
+    margin: 0;
+  }
+
+  .carrito-item-nombre {
+    font-size: 14.5px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  .carrito-item-desc {
+    font-size: 12.5px;
+    color: rgba(30, 26, 24, 0.58);
+    overflow-wrap: anywhere;
+  }
+
+  .carrito-item-controles {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .carrito-cantidad {
+    display: inline-flex;
+    align-items: center;
+    background: var(--beige-suave);
+    border-radius: var(--radius-pill);
+  }
+
+  .carrito-cantidad button {
+    width: 30px;
+    height: 28px;
+    border: none;
+    background: transparent;
+    font: 600 16px var(--fuente-ui);
+    color: var(--carbon);
+    cursor: pointer;
+  }
+
+  .carrito-cantidad button:active {
+    transform: scale(0.9);
+  }
+
+  .carrito-cantidad button:focus-visible {
+    outline: 2px solid var(--terracota);
+    outline-offset: -2px;
+  }
+
+  .carrito-cantidad span {
+    min-width: 22px;
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+
+  .carrito-quitar {
+    border: none;
+    background: transparent;
+    padding: 4px 6px;
+    font: 600 12.5px var(--fuente-ui);
+    color: rgba(30, 26, 24, 0.55);
+    cursor: pointer;
+    border-radius: 8px;
+  }
+
+  .carrito-quitar:focus-visible {
+    outline: 2px solid var(--terracota);
+    outline-offset: 1px;
+  }
+
+  @media (hover: hover) {
+    .carrito-quitar:hover {
+      color: var(--terracota-texto);
+      background: rgba(196, 107, 69, 0.1);
+    }
+  }
+
+  .carrito-item-precio {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--carbon);
+    white-space: nowrap;
+  }
+
+  /* Pie con totales y CTA */
+  .carrito-pie {
+    padding: 16px 20px calc(16px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid var(--beige-linea);
+    background: var(--crema);
+  }
+
+  .carrito-totales {
+    margin: 0 0 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .carrito-totales div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: rgba(30, 26, 24, 0.7);
+  }
+
+  .carrito-totales dd {
+    margin: 0;
+    font-weight: 700;
+    color: var(--carbon);
+  }
+
+  .carrito-total {
+    padding-top: 6px;
+    border-top: 1px dashed rgba(30, 26, 24, 0.16);
+  }
+
+  .carrito-total dt {
+    font-weight: 800;
+    color: var(--carbon);
+  }
+
+  .carrito-total dd {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--terracota);
+  }
+
+  /* Botones propios (no se usa .btn para no colisionar con los estilos
+     globales que la página de la caja define para .btn) */
+  .carrito-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 12px 24px;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    font: 600 15px var(--fuente-ui);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform var(--mov-100) var(--curva-deceleracion),
+      background-color var(--mov-150) var(--curva-deceleracion),
+      border-color var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .carrito-btn:active {
+    transform: scale(0.97);
+  }
+
+  .carrito-btn:focus-visible {
+    outline: 2px solid var(--terracota);
+    outline-offset: 2px;
+  }
+
+  .carrito-btn-primario {
+    background: var(--terracota);
+    color: var(--crema);
+  }
+
+  .carrito-btn-borde {
+    background: transparent;
+    color: var(--carbon);
+    border-color: rgba(30, 26, 24, 0.22);
+  }
+
+  @media (hover: hover) {
+    .carrito-btn-primario:hover {
+      background: color-mix(in srgb, var(--terracota) 88%, var(--carbon));
+    }
+
+    .carrito-btn-borde:hover {
+      border-color: var(--carbon);
+    }
+  }
+
+  .carrito-btn-pagar {
+    width: 100%;
+  }
+
+  /* Badges compartidos por todas las páginas (el display:flex del propio
+     badge anularía el atributo hidden sin esta regla) */
+  .badge-carrito[hidden] {
+    display: none !important;
+  }
+
+  /* Movimiento reducido */
+  @media (prefers-reduced-motion: reduce) {
+    .carrito-fondo,
+    .carrito-panel {
+      transition: opacity 150ms ease !important;
+    }
+
+    .carrito-panel {
+      transform: none !important;
+    }
+  }
+
+  /* Transparencia reducida */
+  @media (prefers-reduced-transparency: reduce) {
+    .carrito-panel {
+      background: var(--crema);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
+
+</style>
+

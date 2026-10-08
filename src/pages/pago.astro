@@ -1,0 +1,998 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const bancos = [
+  'Bancolombia',
+  'Davivienda',
+  'BBVA',
+  'Banco de Bogotá',
+  'Nu',
+  'Scotiabank Colpatria',
+  'Banco Agrario',
+];
+---
+
+<Layout
+  title="Finalizar compra — CreativeLab"
+  description="Checkout simulado de CreativeLab: confirma tu pedido y prueba el flujo de pago."
+>
+  <main class="pago-principal">
+    <div class="pago-envoltura">
+      <div class="pago-cabecera">
+        <a class="pago-logo" href="/" aria-label="CreativeLab — inicio">
+          Creative<span>Lab</span>
+        </a>
+        <span class="pago-chip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+            <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+          </svg>
+          Pago simulado · Prototipo
+        </span>
+      </div>
+
+      <h1>Finaliza tu compra</h1>
+
+      <!-- Estado: carrito vacío -->
+      <div class="pago-vacio" id="pago-vacio" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 8h12l-1.2 12H7.2L6 8Z"></path>
+          <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+        </svg>
+        <h2>Tu carrito está vacío</h2>
+        <p>Crea un producto a tu medida o suscríbete a la caja mensual con propósito.</p>
+        <div class="pago-vacio-acciones">
+          <a class="pago-btn pago-btn-primario" href="/#crear">Crear mi producto</a>
+          <a class="pago-btn pago-btn-borde" href="/caja-creativelab/">Ver la Caja CreativeLab</a>
+        </div>
+      </div>
+
+      <!-- Checkout -->
+<div class="pago-grid" id="pago-grid" hidden style="margin-top: 1rem;">
+  <aside class="pago-resumen" aria-label="Resumen del pedido">
+    <h2>Tu pedido</h2>
+    <ul class="pago-items" id="pago-items"></ul>
+    <dl class="pago-totales">
+      <div><dt>Subtotal</dt><dd id="pago-subtotal">$0 COP</dd></div>
+      <div><dt>Envío</dt><dd>Incluido</dd></div>
+      <div class="pago-total-fila"><dt>Total</dt><dd id="pago-total">$0 COP</dd></div>
+    </dl>
+    <p class="pago-nota">Pago simulado con fines de demostración: no se procesa dinero real.</p>
+  </aside>
+
+  <form class="pago-form" id="pago-form" novalidate>
+    <ol class="pago-pasos" aria-label="Progreso del pago">
+      <li data-paso="1" class="es-actual" aria-current="step"><i>1</i><span>Envío</span></li>
+      <li data-paso="2"><i>2</i><span>Pago</span></li>
+      <li data-paso="3"><i>3</i><span>Listo</span></li>
+    </ol>
+
+    <!-- Paso 1 · Envío -->
+    <section class="pago-seccion" id="pago-seccion-1">
+      <h2>¿A dónde enviamos tu pedido?</h2>
+      <div class="pago-campos">
+        <div class="campo campo-ancho">
+          <label for="f-nombre">Nombre completo</label>
+          <input id="f-nombre" name="nombre" autocomplete="name" placeholder="Ana Martínez" />
+          <p class="campo-error">Escribe tu nombre</p>
+        </div>
+        <div class="campo campo-ancho">
+          <label for="f-contacto">WhatsApp o correo</label>
+          <input id="f-contacto" name="contacto" autocomplete="email" placeholder="300 123 4567 o ana@correo.com" />
+          <p class="campo-error">Déjanos un contacto para coordinar la entrega</p>
+        </div>
+        <div class="campo campo-ancho">
+          <label for="f-direccion">Dirección de envío</label>
+          <input id="f-direccion" name="direccion" autocomplete="street-address" placeholder="Calle 123 #45-67, Apto 502" />
+          <p class="campo-error">Escribe la dirección de entrega</p>
+        </div>
+        <div class="campo">
+          <label for="f-ciudad">Ciudad</label>
+          <input id="f-ciudad" name="ciudad" autocomplete="address-level2" placeholder="Bogotá" />
+          <p class="campo-error">Escribe tu ciudad</p>
+        </div>
+      </div>
+    </section>
+
+      <!-- Paso 2 · Método de pago -->
+    <section class="pago-seccion" id="pago-seccion-2" hidden>
+      <h2>¿Cómo quieres pagar?</h2>
+      <div class="pago-metodos" role="group" aria-label="Método de pago">
+        <button type="button" class="pago-metodo" data-metodo="pse" aria-pressed="false">
+          <span class="pago-metodo-nombre">PSE</span>
+          <span class="pago-metodo-desc">Débito desde tu banco</span>
+        </button>
+        <button type="button" class="pago-metodo es-activo" data-metodo="tarjeta" aria-pressed="true">
+          <span class="pago-metodo-nombre">Tarjeta</span>
+          <span class="pago-metodo-desc">Crédito o débito</span>
+        </button>
+        <button type="button" class="pago-metodo" data-metodo="nequi" aria-pressed="false">
+          <span class="pago-metodo-nombre">Nequi</span>
+          <span class="pago-metodo-desc">Pago desde la app</span>
+        </button>
+      </div>
+
+      <div class="pago-subform" id="pago-sub-pse" hidden>
+        <div class="campo">
+          <label for="f-banco">Tu banco</label>
+          <select id="f-banco">
+            <option value="">Elige tu banco</option>
+            {bancos.map((b) => <option value={b}>{b}</option>)}
+          </select>
+          <p class="campo-error">Elige tu banco para continuar</p>
+        </div>
+      </div>
+
+      <div class="pago-subform" id="pago-sub-tarjeta">
+        <div class="campo">
+          <label for="f-numero">Número de tarjeta</label>
+          <input id="f-numero" inputmode="numeric" autocomplete="cc-number" placeholder="4242 4242 4242 4242" />
+          <p class="campo-error">Escribe los 16 dígitos de la tarjeta</p>
+        </div>
+        <div class="campo">
+          <label for="f-titular">Nombre en la tarjeta</label>
+          <input id="f-titular" autocomplete="cc-name" placeholder="Como aparece en la tarjeta" />
+          <p class="campo-error">Escribe el nombre del titular</p>
+        </div>
+        <div class="pago-doblete">
+          <div class="campo">
+            <label for="f-vence">Vence</label>
+            <input id="f-vence" inputmode="numeric" autocomplete="cc-exp" placeholder="MM/AA" />
+            <p class="campo-error">Usa el formato MM/AA</p>
+          </div>
+          <div class="campo">
+            <label for="f-cvv">CVV</label>
+            <input id="f-cvv" inputmode="numeric" autocomplete="cc-csc" placeholder="123" />
+            <p class="campo-error">3 o 4 dígitos</p>
+          </div>
+        </div>
+        <p class="pago-demo-hint" style="margin: 1rem 0;">Demo: prueba con 4242 4242 4242 4242 · 12/28 · 123</p>
+      </div>
+
+      <div class="pago-subform" id="pago-sub-nequi" hidden>
+        <div class="campo">
+          <label for="f-celular">Celular de tu Nequi</label>
+          <input id="f-celular" inputmode="numeric" placeholder="3001234567" />
+          <p class="campo-error">Escribe los 10 dígitos de tu celular</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paso 3 · Procesando / Éxito -->
+    <section class="pago-seccion" id="pago-seccion-3" hidden>
+      <div class="pago-procesando" id="pago-procesando" hidden>
+        <span class="pago-spinner" aria-hidden="true"></span>
+        <h2>Procesando tu pago…</h2>
+        <p>Estamos confirmando tu pedido. No cierres esta ventana.</p>
+      </div>
+      <div class="pago-exito" id="pago-exito" hidden>
+        <span class="pago-exito-icono">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m5 13 4 4L19 7"></path>
+          </svg>
+        </span>
+        <h2>¡Pago confirmado!</h2>
+        <p class="pago-orden">Pedido <strong id="pago-orden">CL-0000</strong></p>
+        <p class="pago-detalle" id="pago-detalle"></p>
+        <p class="pago-exito-nota">Te escribiremos por WhatsApp o correo para coordinar la entrega. (Flujo simulado: no se realizó ningún cobro).</p>
+        <div class="pago-exito-acciones">
+          <a class="pago-btn pago-btn-primario" href="/">Volver a la tienda</a>
+          <a class="pago-btn pago-btn-borde" href="/caja-creativelab/">Ver la caja</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="pago-acciones" id="pago-acciones">
+      <button type="button" class="pago-btn pago-btn-borde" id="pago-atras" hidden>← Atrás</button>
+      <button type="submit" class="pago-btn pago-btn-primario" id="pago-continuar">Continuar</button>
+    </div>
+  </form>
+</div>
+
+    </div>
+  </main>
+</Layout>
+
+<style is:global>
+  /* Estilos propios de la página de pago con prefijo .pago-.
+     Los campos de formulario reutilizan .campo de src/styles/global.css. */
+  .pago-principal {
+    min-height: 100vh;
+    background: var(--beige-suave);
+    padding: 32px 20px 80px;
+  }
+
+  .pago-envoltura {
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  .pago-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .pago-logo {
+    font: 600 22px var(--fuente-display);
+    color: var(--carbon);
+    text-decoration: none;
+  }
+
+  .pago-logo span {
+    color: var(--terracota);
+  }
+
+  .pago-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--crema);
+    border: 1px solid var(--beige-linea);
+    border-radius: var(--radius-pill);
+    padding: 7px 14px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: rgba(30, 26, 24, 0.7);
+  }
+
+  .pago-chip svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .pago-envoltura > h1 {
+    font-size: clamp(30px, 6vw, 44px);
+    margin-bottom: 28px;
+  }
+
+  /* Estado vacío */
+  .pago-vacio {
+    background: var(--crema);
+    border-radius: var(--radius-tarjeta);
+    box-shadow: var(--sombra-tarjeta);
+    padding: 56px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .pago-vacio svg {
+    width: 46px;
+    height: 46px;
+    color: rgba(30, 26, 24, 0.35);
+    margin-bottom: 8px;
+  }
+
+  .pago-vacio h2 {
+    font-size: 24px;
+    margin: 0;
+  }
+
+  .pago-vacio p {
+    color: rgba(30, 26, 24, 0.65);
+    max-width: 44ch;
+    margin: 0;
+  }
+
+  .pago-vacio-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  /* Grid: resumen + formulario */
+  .pago-grid {
+    display: grid;
+    gap: 20px;
+    align-items: start;
+  }
+
+  @media (min-width: 900px) {
+    .pago-grid {
+      grid-template-columns: 360px 1fr;
+      gap: 28px;
+    }
+  }
+
+  /* Resumen del pedido */
+  .pago-resumen {
+    background: var(--crema);
+    border-radius: var(--radius-tarjeta);
+    box-shadow: var(--sombra-tarjeta);
+    padding: 24px;
+  }
+
+  @media (min-width: 900px) {
+    .pago-resumen {
+      position: sticky;
+      top: 24px;
+    }
+  }
+
+  .pago-resumen h2 {
+    font: 600 19px var(--fuente-display);
+    margin: 0 0 14px;
+  }
+
+  .pago-items {
+    list-style: none;
+    margin: 0 0 14px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pago-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .pago-item + .pago-item {
+    border-top: 1px dashed rgba(30, 26, 24, 0.14);
+  }
+
+  .pago-item-visual {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 11px;
+    background: var(--visual-fondo, var(--beige));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(30, 26, 24, 0.12);
+  }
+
+  .pago-item-visual svg {
+    width: 20px;
+    height: 20px;
+    color: var(--visual-tinta, rgba(30, 26, 24, 0.85));
+  }
+
+  .pago-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .pago-item-nombre,
+  .pago-item-desc,
+  .pago-item-cantidad,
+  .pago-item-precio {
+    margin: 0;
+  }
+
+  .pago-item-nombre {
+    font-size: 14px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  .pago-item-desc {
+    margin-top: 2px;
+    font-size: 12px;
+    color: rgba(30, 26, 24, 0.58);
+    overflow-wrap: anywhere;
+  }
+
+  .pago-item-cantidad {
+    margin-top: 2px;
+    font-size: 12px;
+    color: rgba(30, 26, 24, 0.58);
+  }
+
+  .pago-item-precio {
+    font-size: 13.5px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  /* Totales del resumen */
+  .pago-totales {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .pago-totales div {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: rgba(30, 26, 24, 0.7);
+  }
+
+  .pago-totales dd {
+    margin: 0;
+    font-weight: 700;
+    color: var(--carbon);
+  }
+
+  .pago-total-fila {
+    padding-top: 8px;
+    border-top: 1px dashed rgba(30, 26, 24, 0.16);
+  }
+
+  .pago-total-fila dt {
+    font-weight: 800;
+    color: var(--carbon);
+  }
+
+  .pago-total-fila dd {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--terracota);
+  }
+
+  .pago-nota {
+    margin: 14px 0 0;
+    font-size: 12px;
+    color: rgba(30, 26, 24, 0.55);
+  }
+
+  /* Formulario */
+  .pago-form {
+    background: var(--crema);
+    border-radius: var(--radius-tarjeta);
+    box-shadow: var(--sombra-tarjeta);
+    padding: 24px;
+  }
+
+  .pago-seccion h2 {
+    font: 600 21px var(--fuente-display);
+    margin: 0 0 18px;
+  }
+
+  /* Barra de pasos tipo segmentos */
+  .pago-pasos {
+    list-style: none;
+    display: flex;
+    gap: 8px;
+    margin: 0 0 24px;
+    padding: 0;
+  }
+
+  .pago-pasos li {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 8px;
+    border-radius: var(--radius-pill);
+    background: var(--beige-suave);
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(30, 26, 24, 0.55);
+    transition: background-color var(--mov-150) var(--curva-deceleracion),
+      color var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .pago-pasos li i {
+    font-style: normal;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(30, 26, 24, 0.14);
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+
+  .pago-pasos li span {
+    display: none;
+  }
+
+  @media (min-width: 560px) {
+    .pago-pasos li span {
+      display: inline;
+    }
+  }
+
+  .pago-pasos li.es-actual {
+    background: var(--carbon);
+    color: var(--crema);
+  }
+
+  .pago-pasos li.es-actual i {
+    background: var(--terracota);
+    color: var(--crema);
+  }
+
+  .pago-pasos li.es-hecho {
+    color: var(--carbon);
+  }
+
+  .pago-pasos li.es-hecho i {
+    background: var(--salvia);
+    color: var(--carbon);
+  }
+
+  /* Campos (usa .campo de global.css; aquí solo la grilla) */
+  .pago-campos {
+    display: grid;
+    gap: 16px;
+  }
+
+  @media (min-width: 640px) {
+    .pago-campos {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .pago-campos .campo-ancho {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Métodos de pago */
+  .pago-metodos {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(3, 1fr);
+    margin-bottom: 20px;
+  }
+
+  .pago-metodo {
+    border: 1.5px solid var(--beige-linea);
+    background: var(--crema);
+    border-radius: 16px;
+    padding: 14px 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    cursor: pointer;
+    font-family: var(--fuente-ui);
+    text-align: center;
+    transition: border-color var(--mov-150) var(--curva-deceleracion),
+      background-color var(--mov-150) var(--curva-deceleracion),
+      transform var(--mov-100) var(--curva-deceleracion);
+  }
+
+  .pago-metodo:active {
+    transform: scale(0.97);
+  }
+
+  .pago-metodo:focus-visible {
+    outline: 2px solid var(--terracota);
+    outline-offset: 2px;
+  }
+
+  .pago-metodo-nombre {
+    font-weight: 700;
+    font-size: 14.5px;
+    color: var(--carbon);
+  }
+
+  .pago-metodo-desc {
+    font-size: 11.5px;
+    color: rgba(30, 26, 24, 0.55);
+  }
+
+  .pago-metodo.es-activo {
+    border-color: var(--carbon);
+    background: var(--beige-suave);
+  }
+
+  .pago-subform {
+    display: grid;
+    gap: 16px;
+  }
+
+  .pago-doblete {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .pago-form .campo.es-error select {
+    border-color: var(--terracota);
+  }
+
+  .pago-demo-hint {
+    margin: 0;
+    font-size: 12.5px;
+    color: rgba(30, 26, 24, 0.55);
+    background: var(--beige-suave);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+
+  /* Acciones */
+  .pago-acciones {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  #pago-continuar {
+    margin-left: auto;
+    min-width: 200px;
+  }
+
+  .pago-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 46px;
+    padding: 12px 24px;
+    border-radius: var(--radius-pill);
+    border: 1px solid transparent;
+    font: 600 15px var(--fuente-ui);
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform var(--mov-100) var(--curva-deceleracion),
+      background-color var(--mov-150) var(--curva-deceleracion),
+      border-color var(--mov-150) var(--curva-deceleracion);
+  }
+
+  .pago-btn:active {
+    transform: scale(0.97);
+  }
+
+  .pago-btn:focus-visible {
+    outline: 2px solid var(--terracota);
+    outline-offset: 2px;
+  }
+
+  .pago-btn-primario {
+    background: var(--terracota);
+    color: var(--crema);
+  }
+
+  .pago-btn-borde {
+    background: transparent;
+    color: var(--carbon);
+    border-color: rgba(30, 26, 24, 0.22);
+  }
+
+  @media (hover: hover) {
+    .pago-btn-primario:hover {
+      background: color-mix(in srgb, var(--terracota) 88%, var(--carbon));
+    }
+
+    .pago-btn-borde:hover {
+      border-color: var(--carbon);
+    }
+  }
+
+  /* Procesando y éxito */
+  .pago-procesando,
+  .pago-exito {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    padding: 36px 8px;
+  }
+
+  .pago-procesando h2,
+  .pago-exito h2 {
+    margin: 0;
+  }
+
+  .pago-procesando p,
+  .pago-exito p {
+    color: rgba(30, 26, 24, 0.65);
+    margin: 0;
+  }
+
+  .pago-spinner {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid var(--beige);
+    border-top-color: var(--terracota);
+    animation: pago-girar 0.8s linear infinite;
+    margin-bottom: 12px;
+  }
+
+  @keyframes pago-girar {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .pago-exito-icono {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--salvia);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--carbon);
+    margin-bottom: 10px;
+  }
+
+  .pago-exito-icono svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .pago-orden strong {
+    color: var(--terracota-texto);
+  }
+
+  .pago-exito-nota {
+    font-size: 13px;
+    color: rgba(30, 26, 24, 0.55);
+    max-width: 46ch;
+  }
+
+  .pago-exito-acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+
+</style>
+
+
+<script>
+  /* ============================================================
+     CreativeLab — Lógica del checkout simulado (/pago/)
+     Lee el carrito compartido (window.Carrito, ver Layout.astro),
+     valida en 2 pasos y simula la confirmación del pago.
+     ============================================================ */
+
+  /* Ámbito del carrito a pagar: ?ambito=caja | productos (default).
+     Los dos carritos son independientes (ver src/scripts/carrito.js):
+     solo se cobra y se vacía el que llegó en la URL. */
+  const AMBITO = new URLSearchParams(location.search).get('ambito') === 'caja' ? 'caja' : 'productos';
+  const CLAVE_POR_AMBITO = { productos: 'creativelab:carrito', caja: 'creativelab:caja' };
+
+  const $ = (sel) => document.querySelector(sel);
+
+  const formatoCOP = (n) => `$${Math.round(n).toLocaleString('es-CO')}`;
+
+  const escapar = (texto) =>
+    String(texto ?? '').replace(/[&<>"']/g, (c) => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+
+  function luminancia(hex) {
+    const c = String(hex || '').replace('#', '');
+    if (c.length < 6) return 0.5;
+    const r = parseInt(c.slice(0, 2), 16) / 255;
+    const g = parseInt(c.slice(2, 4), 16) / 255;
+    const b = parseInt(c.slice(4, 6), 16) / 255;
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+
+  const ICONOS = {
+    producto:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l-1.2 12H7.2L6 8Z"></path><path d="M9 8V6a3 3 0 0 1 6 0v2"></path></svg>',
+    suscripcion:
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7"></path><path d="M12 7s-2.6 0-3.6-1.5A1.9 1.9 0 0 1 11 3c.8.5 1 2 1 4z"></path><path d="M12 7s2.6 0 3.6-1.5A1.9 1.9 0 0 0 13 3c-.8.5-1 2-1 4z"></path></svg>',
+  };
+
+  const NOMBRE_METODO = { pse: 'PSE', tarjeta: 'Tarjeta', nequi: 'Nequi' };
+
+  let paso = 1;
+  let metodo = 'tarjeta';
+  let itemsPedido = [];
+  let totalPedido = 0;
+
+  function leerCarrito() {
+    try {
+      const datos = JSON.parse(localStorage.getItem(CLAVE_POR_AMBITO[AMBITO]) || '[]');
+      return Array.isArray(datos) ? datos.filter((it) => it && it.id) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  /* ---------- Resumen del pedido ---------- */
+  function renderizarResumen() {
+    $('#pago-items').innerHTML = itemsPedido
+      .map((it) => {
+        const fondo = it.tipo === 'suscripcion' ? '#B8D3AE' : it.color || '#E6DEC9';
+        const tinta = luminancia(fondo) > 0.45 ? 'rgba(30,26,24,.85)' : 'rgba(250,248,243,.92)';
+        const icono = ICONOS[it.tipo] ?? ICONOS.producto;
+        return `
+          <li class="pago-item">
+            <span class="pago-item-visual" style="--visual-fondo:${fondo};--visual-tinta:${tinta}">${icono}</span>
+            <div class="pago-item-info">
+              <p class="pago-item-nombre">${escapar(it.nombre)}</p>
+              ${it.descripcion ? `<p class="pago-item-desc">${escapar(it.descripcion)}</p>` : ''}
+              ${it.cantidad > 1 ? `<p class="pago-item-cantidad">Cantidad: ${it.cantidad}</p>` : ''}
+            </div>
+            <p class="pago-item-precio">${formatoCOP(it.precio * it.cantidad)}</p>
+          </li>`;
+      })
+      .join('');
+
+    $('#pago-subtotal').textContent = `${formatoCOP(totalPedido)} COP`;
+    $('#pago-total').textContent = `${formatoCOP(totalPedido)} COP`;
+  }
+
+  /* ---------- Pasos ---------- */
+  function irPaso(n) {
+    paso = n;
+    [1, 2, 3].forEach((k) => {
+      $('#pago-seccion-' + k).hidden = k !== n;
+    });
+    document.querySelectorAll('.pago-pasos li').forEach((li) => {
+      const k = Number(li.dataset.paso);
+      li.classList.toggle('es-actual', k === n);
+      li.classList.toggle('es-hecho', k < n);
+      if (k === n) li.setAttribute('aria-current', 'step');
+      else li.removeAttribute('aria-current');
+    });
+    $('#pago-atras').hidden = n === 1;
+    const continuar = $('#pago-continuar');
+    continuar.hidden = n === 3;
+    continuar.textContent = n === 1 ? 'Continuar' : `Pagar ${formatoCOP(totalPedido)} COP`;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ---------- Validaciones ---------- */
+  function validarReglas(reglas) {
+    let valido = true;
+    let primero = null;
+    reglas.forEach(([sel, fn]) => {
+      const campo = $(sel);
+      if (!campo) return;
+      const ok = fn(campo.value);
+      campo.closest('.campo')?.classList.toggle('es-error', !ok);
+      if (!ok) {
+        valido = false;
+        primero = primero ?? campo;
+      }
+    });
+    primero?.focus();
+    return valido;
+  }
+
+  function validarEnvio() {
+    return validarReglas([
+      ['#f-nombre', (v) => v.trim().length >= 2],
+      ['#f-contacto', (v) => v.trim().length >= 5],
+      ['#f-direccion', (v) => v.trim().length >= 5],
+      ['#f-ciudad', (v) => v.trim().length >= 2],
+    ]);
+  }
+
+  function validarPago() {
+    if (metodo === 'pse') {
+      return validarReglas([['#f-banco', (v) => v !== '']]);
+    }
+    if (metodo === 'nequi') {
+      return validarReglas([['#f-celular', (v) => v.replace(/\D/g, '').length === 10]]);
+    }
+    const numero = $('#f-numero').value.replace(/\D/g, '');
+    const vence = $('#f-vence').value.match(/^(\d{2})\/(\d{2})$/);
+    return validarReglas([
+      ['#f-numero', () => numero.length === 16],
+      ['#f-titular', (v) => v.trim().length >= 2],
+      ['#f-vence', () => Boolean(vence) && Number(vence[1]) >= 1 && Number(vence[1]) <= 12],
+      ['#f-cvv', (v) => /^\d{3,4}$/.test(v)],
+    ]);
+  }
+
+  /* ---------- Pago simulado ---------- */
+  function procesarPago() {
+    $('#pago-acciones').hidden = true;
+    $('#pago-procesando').hidden = false;
+    $('#pago-exito').hidden = true;
+    irPaso(3);
+
+    const orden = 'CL-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+    const articulos = itemsPedido.reduce((suma, it) => suma + it.cantidad, 0);
+
+    /* Simulación: delay de "procesamiento" y confirmación sin backend */
+    setTimeout(() => {
+      $('#pago-procesando').hidden = true;
+      $('#pago-exito').hidden = false;
+      $('#pago-orden').textContent = orden;
+      $('#pago-detalle').textContent =
+        `${articulos} ${articulos === 1 ? 'artículo' : 'artículos'} · ` +
+        `${NOMBRE_METODO[metodo]} · Total ${formatoCOP(totalPedido)} COP`;
+      /* El resumen visible conserva lo comprado; solo el carrito pagado se vacía */
+      if (window.Carrito?.[AMBITO]) window.Carrito[AMBITO].vaciar();
+      else localStorage.removeItem(CLAVE_POR_AMBITO[AMBITO]);
+    }, 2200);
+  }
+
+  /* ---------- Eventos ---------- */
+  document.querySelectorAll('.pago-metodo').forEach((boton) => {
+    boton.addEventListener('click', () => {
+      metodo = boton.dataset.metodo;
+      document.querySelectorAll('.pago-metodo').forEach((b) => {
+        b.classList.toggle('es-activo', b === boton);
+        b.setAttribute('aria-pressed', String(b === boton));
+      });
+      $('#pago-sub-pse').hidden = metodo !== 'pse';
+      $('#pago-sub-tarjeta').hidden = metodo !== 'tarjeta';
+      $('#pago-sub-nequi').hidden = metodo !== 'nequi';
+    });
+  });
+
+  /* Formato en vivo: tarjeta agrupada, MM/AA, solo dígitos */
+  $('#f-numero')?.addEventListener('input', (e) => {
+    const digitos = e.target.value.replace(/\D/g, '').slice(0, 16);
+    e.target.value = digitos.replace(/(\d{4})(?=\d)/g, '$1 ');
+  });
+
+  $('#f-vence')?.addEventListener('input', (e) => {
+    let digitos = e.target.value.replace(/\D/g, '').slice(0, 4);
+    if (digitos.length > 2) digitos = digitos.slice(0, 2) + '/' + digitos.slice(2);
+    e.target.value = digitos;
+  });
+
+  $('#f-cvv')?.addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+  });
+
+  $('#f-celular')?.addEventListener('input', (e) => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+  });
+
+  document.querySelectorAll('#pago-form input, #pago-form select').forEach((campo) => {
+    campo.addEventListener('input', () => campo.closest('.campo')?.classList.remove('es-error'));
+    campo.addEventListener('change', () => campo.closest('.campo')?.classList.remove('es-error'));
+  });
+
+  $('#pago-atras')?.addEventListener('click', () => irPaso(1));
+
+  $('#pago-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (paso === 1) {
+      if (validarEnvio()) irPaso(2);
+    } else if (paso === 2) {
+      if (validarPago()) procesarPago();
+    }
+  });
+
+  /* ---------- Textos según el carrito que se paga ---------- */
+  function adaptarTextos() {
+    if (AMBITO !== 'caja') return;
+    const tituloResumen = document.querySelector('.pago-resumen h2');
+    if (tituloResumen) tituloResumen.textContent = 'Tu suscripción';
+    const tituloVacio = document.querySelector('#pago-vacio h2');
+    if (tituloVacio) tituloVacio.textContent = 'Aún no has elegido tu caja';
+    const primario = document.querySelector('#pago-vacio .pago-btn-primario');
+    if (primario) {
+      primario.textContent = 'Elegir mi plan';
+      primario.setAttribute('href', '/caja-creativelab/#planes');
+    }
+  }
+
+  /* ---------- Init ---------- */
+  function iniciar() {
+    adaptarTextos();
+    itemsPedido = window.Carrito?.[AMBITO] ? window.Carrito[AMBITO].obtener() : leerCarrito();
+    if (!itemsPedido.length) {
+      $('#pago-vacio').hidden = false;
+      $('#pago-grid').hidden = true;
+      return;
+    }
+    totalPedido = itemsPedido.reduce((suma, it) => suma + it.precio * it.cantidad, 0);
+    $('#pago-grid').hidden = false;
+    renderizarResumen();
+    irPaso(1);
+  }
+
+  /* carrito.js es un módulo cargado por Layout: si aún no ejecutó, esperar */
+  if (window.Carrito) iniciar();
+  else window.addEventListener('load', iniciar);
+
+</script>
+

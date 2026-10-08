@@ -17,6 +17,12 @@
   --carbon-12: rgba(30, 26, 24, 0.12);
   --terracota-texto: #a4502d;
 
+  /* Lenguaje de controles Apple: segmentado e interruptor */
+  --segmento-fondo: rgba(230, 222, 201, 0.45);
+  --interruptor-off: rgba(30, 26, 24, 0.16);
+
+  accent-color: var(--terracota);
+
   --sombra-tarjeta: 0 8px 24px rgba(30, 26, 24, 0.06);
   --sombra-suave: 0 12px 32px rgba(30, 26, 24, 0.08);
   --sombra-media: 0 24px 64px rgba(30, 26, 24, 0.14);
@@ -68,6 +74,12 @@ html {
   font-size: 16px;
   font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
+  /* Plataforma Safari: sin highlight de tap ni reescalado de texto */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  /* Scrollbars tipo overlay */
+  scrollbar-width: thin;
+  scrollbar-color: var(--carbon-12) transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -93,6 +105,31 @@ button {
   border: none;
   padding: 0;
   color: inherit;
+}
+
+/* Controles tipo app: no seleccionables; el contenido sí lo es */
+button,
+.btn,
+.tab,
+.icon-btn,
+nav a {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Scrollbars finas estilo overlay (WebKit) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--carbon-12);
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 input,
@@ -249,23 +286,15 @@ section[id],
   transform: scale(0.97);
 }
 
+/* Botones estilo Apple: sin halo de color; el hover oscurece, no proyecta */
 .btn-primario {
   background: var(--terracota);
   color: var(--crema);
-  box-shadow: 0 10px 24px rgba(200, 107, 69, 0.28);
-}
-
-.btn-primario:hover {
-  box-shadow: 0 14px 32px rgba(200, 107, 69, 0.38);
 }
 
 .btn-oscuro {
   background: var(--carbon);
   color: var(--crema);
-}
-
-.btn-oscuro:hover {
-  background: #352e2a;
 }
 
 .btn-borde {
@@ -274,8 +303,18 @@ section[id],
   border-color: rgba(30, 26, 24, 0.22);
 }
 
-.btn-borde:hover {
-  border-color: var(--carbon);
+@media (hover: hover) {
+  .btn-primario:hover {
+    background: color-mix(in srgb, var(--terracota) 88%, var(--carbon));
+  }
+
+  .btn-oscuro:hover {
+    background: #352e2a;
+  }
+
+  .btn-borde:hover {
+    border-color: var(--carbon);
+  }
 }
 
 .btn-sm {
@@ -300,9 +339,10 @@ section[id],
     transform var(--mov-100) var(--curva-deceleracion);
 }
 
-.flecha-circulo:hover {
-  background: var(--beige);
-  transform: translateY(-1px);
+@media (hover: hover) {
+  .flecha-circulo:hover {
+    background: var(--beige);
+  }
 }
 
 .flecha-circulo:active {
@@ -413,6 +453,8 @@ section[id],
   width: min(720px, 94vw);
   max-height: 90vh;
   overflow: auto;
+  /* El rebote del scroll no se arrastra a la página de atrás (Safari) */
+  overscroll-behavior: contain;
   box-shadow: var(--sombra-media);
 }
 
@@ -434,8 +476,9 @@ section[id],
 /* ---------- Barra sticky móvil ---------- */
 #barra-movil {
   position: fixed;
-  left: 16px;
-  right: 16px;
+  /* Safe areas laterales: en landscape la barra no queda bajo el notch */
+  left: max(16px, env(safe-area-inset-left, 0px));
+  right: max(16px, env(safe-area-inset-right, 0px));
   bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   z-index: 120;
   display: flex;

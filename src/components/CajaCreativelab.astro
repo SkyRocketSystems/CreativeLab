@@ -14,6 +14,13 @@
 <header class="bar"><div class="nav">
   <div class="wm">CreativeLab</div>
   <nav><a href="#contenido">La caja</a><a href="#planes">Planes</a><a href="#impacto">Impacto</a><a href="#preventa">Preventa</a></nav>
+  <button class="cbtncarrito" data-abrir-carrito="caja" type="button" aria-label="Caja, 0 planes">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M6 8h12l-1.2 12H7.2L6 8Z"></path>
+      <path d="M9 8V6a3 3 0 0 1 6 0v2"></path>
+    </svg>
+    <span class="cbadge badge-carrito" data-ambito="caja" aria-hidden="true" hidden>0</span>
+  </button>
 </div></header>
 
 <div class="hero"><div class="hero-in">
@@ -53,6 +60,7 @@
   </div>
   <div class="plans" id="plans"></div>
   <p class="note" id="sel" style="margin-top:18px"></p>
+  <button class="btn" id="suscribir" type="button" style="margin-top:18px">Suscribirme y pagar →</button>
 </section>
 
 <section>
@@ -102,21 +110,6 @@
     <div class="cause weave"><b>Ambiente</b><span>Protección ambiental.</span></div>
   </div>
   <p class="note" style="margin-top:16px">Reporte de impacto: suscripciones del periodo, monto aportado, uso del dinero, personas vinculadas, productos elaborados y empresas vinculadas.</p>
-</section>
-
-<section>
-  <h2>Ficha del piloto</h2>
-  <div class="scroll"><table>
-    <tr><th>Qué</th><td>Suscripción de cajas sorpresa CreativeLab con aporte social incluido.</td></tr>
-    <tr><th>Por qué</th><td>Genera recompra y expectativa, y vuelve medible cada compra.</td></tr>
-    <tr><th>Quién</th><td>Jóvenes, estudiantes, familias y clientes de diseño y consumo con propósito.</td></tr>
-    <tr><th>Cuándo</th><td>Suscripción semestral (6 cajas) o anual (12 cajas), con entrega mensual.</td></tr>
-    <tr><th>Dónde</th><td>Instagram, WhatsApp, página web, ferias y puntos aliados.</td></tr>
-    <tr><th>Cómo</th><td>Elige plan, paga, recibe la caja y conoce el impacto.</td></tr>
-    <tr><th>Cuánto</th><td>Desde $49.900 hasta $119.900 por caja (precios piloto).</td></tr>
-    <tr><th>Recursos</th><td>Productos, empaques, diseñador, logística, pagos recurrentes, control de suscriptores, acuerdo con la fundación y reporte de impacto.</td></tr>
-  </table></div>
-  <p class="note" style="margin-top:16px">Ruta: definir 3 niveles y su costo real, elegir fundación y mecanismo de aporte, producir 20 a 30 cajas, abrir preventa y medir cuántos continúan.</p>
 </section>
 
 <section id="preventa" style="padding-top:8px">
@@ -252,6 +245,12 @@ td{color:var(--carbon-60)}
 .track{height:8px;background:rgba(30,26,24,.25);border-radius:99px;margin:16px 0 8px;overflow:hidden}
 .track i{display:block;height:100%;background:var(--carbon);width:0;transition:width var(--mov-400) var(--curva-deceleracion)}
 .ok{background:var(--crema);padding:14px;border-radius:12px;display:none;margin-top:14px}
+/* carrito de la caja, independiente del de productos (src/scripts/carrito.js via Layout) */
+.cbtncarrito{position:relative;flex:none;width:40px;height:40px;margin-left:16px;border:0;border-radius:50%;background:transparent;color:var(--carbon);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:background-color var(--mov-150) var(--curva-deceleracion)}
+.cbtncarrito svg{width:21px;height:21px}
+.cbtncarrito:focus-visible{outline:2px solid var(--terracota);outline-offset:2px}
+@media(hover:hover){.cbtncarrito:hover{background:rgba(30,26,24,.06)}}
+.cbadge{position:absolute;top:2px;right:0;min-width:17px;height:17px;padding-inline:4px;border-radius:var(--radius-pill);background:var(--terracota);color:var(--crema);font:700 10px var(--fuente-ui);display:flex;align-items:center;justify-content:center}
 footer{background:var(--carbon);color:var(--crema);padding:44px 20px 64px;text-align:center;font-size:14px}
 footer .wm{margin-bottom:6px}
 footer .n{opacity:.7}
@@ -299,6 +298,26 @@ document.getElementById('go').onclick=function(){
   if(!nm||!ct){er.textContent='Escribe tu nombre y un WhatsApp o correo para reservar.';return}
   if(res>=30){er.textContent='Las 30 cajas piloto ya están reservadas.';return}
   res++;bar();ok.style.display='block';ok.textContent='Listo, '+nm+'. Reservaste la caja '+document.getElementById('pp').value+'. Te escribiremos a '+ct+'.';
+};
+/* Suscripción elegida → carrito de la caja (independiente del carrito de
+   productos; window.Carrito.caja lo provee src/scripts/carrito.js, cargado
+   por Layout como módulo: al hacer click ya está disponible). El precio del
+   item es el total del periodo. duracion habilita la regla de un plan por
+   Semestral/Anual: elegir otro plan de la misma duración reemplaza al que
+   estaba. */
+document.getElementById('suscribir').onclick=function(){
+  if(!window.Carrito||!window.Carrito.caja)return;
+  var s=P[sel],k=freq=='Semestral'?6:12;
+  window.Carrito.caja.agregar({
+    id:'suscripcion|'+s.n+'|'+freq,
+    tipo:'suscripcion',
+    nombre:'Caja '+s.n+' · '+freq,
+    descripcion:k+' cajas, una cada mes · Aporte social '+money(s.a)+' por caja',
+    precio:s.p*k,
+    cantidad:1,
+    duracion:freq
+  });
+  window.Carrito.caja.abrir();
 };
 drawPlans();document.getElementById('cp').value=sel;calc();setTimeout(bar,300);
 </script>
